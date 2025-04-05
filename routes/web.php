@@ -19,3 +19,7 @@ Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'authenticate']);
+
+Route::get('/gallery', function () {
+    return view('gallery');
+})->name('gallery');
