@@ -17,9 +17,22 @@ Route::post('/reservasi', [ReservasiController::class, 'store']);
 
 Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi');
 
-Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/login', [AuthController::class, 'authenticate']);
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
+Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
+});
 
 Route::get('/gallery', function () {
     return view('gallery');
 })->name('gallery');
+
+Route::get('/admin', function () {
+    return view('admin.dashboard');
+});
+
+
