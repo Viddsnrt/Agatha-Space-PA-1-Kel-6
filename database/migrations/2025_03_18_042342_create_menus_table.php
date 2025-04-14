@@ -10,17 +10,17 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
-    Schema::create('menus', function (Blueprint $table) {
-        $table->id();
-        $table->string('nama');
-        $table->text('deskripsi')->nullable();
-        $table->integer('harga');
-        $table->string('gambar')->nullable();
-        $table->timestamps();
-    });
-}
-
+    {
+        Schema::create('menus', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama');
+            $table->text('deskripsi')->nullable();
+            $table->decimal('harga', 10, 2);
+            $table->string('gambar')->nullable(); // kalau ada foto makanannya
+            $table->timestamps();
+        });
+    }
+    
 
     /**
      * Reverse the migrations.

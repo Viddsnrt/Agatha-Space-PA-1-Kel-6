@@ -1,4 +1,5 @@
-@extends('layouts.app')
+@extends('user.layouts.app')
+
 
 @section('title', 'Tentang Kami - Agatha Space')
 

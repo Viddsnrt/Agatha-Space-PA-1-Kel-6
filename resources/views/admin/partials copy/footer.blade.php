@@ -38,7 +38,7 @@
             <!-- Contact -->
             <div class="col-md-4 mb-4">
                 <h5>Contact Us</h5>
-                <p>Akshya Nagar 1st Block 1st Cross, Ramamurthy nagar, Bangalore-560016</p>
+                <p>Akshya Nagar 2st Block 1st Cross, Ramamurthy nagar, Bangalore-560016</p>
                 <p>082349689976</p>
                 <p>agathaspace@gmail.com</p>
                 <p>www.agathaspace.com</p>

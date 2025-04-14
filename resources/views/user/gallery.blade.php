@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('user.layouts.app')
 
 @section('body-class', 'gallery') {{-- Class body khusus halaman ini --}}
 
