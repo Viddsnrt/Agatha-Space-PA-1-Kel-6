@@ -1,3 +1,5 @@
+
+@include('admin.partials.sidebar')
 @extends('adminlte::page')
 
 @section('title', 'Dashboard Admin')

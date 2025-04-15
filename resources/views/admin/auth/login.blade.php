@@ -88,7 +88,7 @@
         </div>
     </form>
 
-    <p class="form-text">Belum punya akun? <a href="#">Daftar di sini</a></p>
+    <p class="form-text">Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
 </div>
 
 <!-- Bootstrap JS CDN -->

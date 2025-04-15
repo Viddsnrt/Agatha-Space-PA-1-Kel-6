@@ -1,4 +1,4 @@
-@extends('user.layouts.app')
+@extends('admin.auth.login')
 
 @section('content')
 <div class="container py-5">

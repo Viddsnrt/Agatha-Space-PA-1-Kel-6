@@ -14,35 +14,19 @@
           </a>
         </li>
 
+        <!-- Kategori -->
+        <li class="nav-item">
+          <a href="{{ route('admin.categories.index') }}" class="nav-link">
+            <i class="nav-icon fas fa-tags"></i>
+            <p>Kategori</p>
+          </a>
+        </li>
+
         <!-- Menu -->
         <li class="nav-item">
-          <a href="{{ route('menus.index') }}" class="nav-link">
+          <a href="{{ route('admin.menus.index') }}" class="nav-link">
             <i class="nav-icon fas fa-utensils"></i>
             <p>Menu</p>
-          </a>
-        </li>
-
-        <!-- Reservasi -->
-        <li class="nav-item">
-          <a href="{{ route('reservations.index') }}" class="nav-link">
-            <i class="nav-icon fas fa-calendar-check"></i>
-            <p>Reservasi</p>
-          </a>
-        </li>
-
-        <!-- Pelanggan -->
-        <li class="nav-item">
-          <a href="{{ route('customers.index') }}" class="nav-link">
-            <i class="nav-icon fas fa-users"></i>
-            <p>Pelanggan</p>
-          </a>
-        </li>
-
-        <!-- Transaksi -->
-        <li class="nav-item">
-          <a href="{{ route('transactions.index') }}" class="nav-link">
-            <i class="nav-icon fas fa-receipt"></i>
-            <p>Transaksi</p>
           </a>
         </li>
 
