@@ -8,6 +8,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\MenuController as AdminMenuController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController; // <--- ini yang sebelumnya belum ada
 
 // ====================
 // ✨ Public (User Area)
@@ -16,11 +17,10 @@ use App\Http\Controllers\Admin\CategoryController;
 // Halaman utama
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
 Route::get('/tentang-kami', [LandingPageController::class, 'tentangkami'])->name('tentangkami');
-Route::get('/menu', [LandingPageController::class, 'menu'])->name('menu');
 Route::get('/kontak', [LandingPageController::class, 'kontak'])->name('kontak');
 Route::get('/gallery', fn () => view('user.gallery'))->name('gallery');
 
-// Menu (User-side menu — ini harus tetap pakai controller user, bukan admin)
+// Menu (user side)
 Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 
 // Reservasi
@@ -41,12 +41,12 @@ Route::post('/register', [AuthController::class, 'register']);
 // 🔐 Admin Area (Protected)
 // ========================
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', fn () => view('admin.dashboard'))->name('dashboard');
+    // Dashboard admin (menampilkan jumlah menu & kategori)
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // CRUD Menu Admin
+    // CRUD Menu
     Route::resource('menus', AdminMenuController::class);
 
-    // CRUD Category Admin
+    // CRUD Kategori
     Route::resource('categories', CategoryController::class);
-    
 });

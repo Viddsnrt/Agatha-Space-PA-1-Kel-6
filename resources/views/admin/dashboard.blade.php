@@ -1,8 +1,6 @@
-
-@include('admin.partials.sidebar')
 @extends('adminlte::page')
 
-@section('title', 'Dashboard Admin')
+@section('title', 'Dashboard')
 
 @section('content_header')
     <h1>Dashboard Admin Agatha Space</h1>
@@ -10,27 +8,11 @@
 
 @section('content')
     <div class="row">
-        <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>12</h3>
-                    <p>Menu</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-coffee"></i>
-                </div>
-                <a href="#" class="small-box-footer">Lihat Semua <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
+        <div class="col-md-4">
+            <x-adminlte-info-box title="Menu" text="{{ $totalMenus }}" icon="fas fa-coffee" theme="teal" url="{{ route('admin.menus.index') }}" url-text="Lihat Semua"/>
         </div>
-        <!-- Tambahkan card lainnya untuk reservasi, transaksi, dll -->
+        <div class="col-md-4">
+            <x-adminlte-info-box title="Kategori" text="{{ $totalCategories }}" icon="fas fa-tags" theme="indigo" url="{{ route('admin.categories.index') }}" url-text="Lihat Semua"/>
+        </div>
     </div>
-@endsection
-
-@section('css')
-    {{-- Tambah CSS custom kalau perlu --}}
-@endsection
-
-@section('js')
-    {{-- Tambah JS custom kalau perlu --}}
 @endsection

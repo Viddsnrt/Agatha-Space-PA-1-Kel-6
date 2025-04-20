@@ -24,7 +24,7 @@
   <!-- Sidebar -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="{{ route('admin.dashboard') }}" class="brand-link">
-      <span class="brand-text font-weight-light">Admin Panel</span>
+      <span class="brand-text font-weight-light">Agatha Space</span>
     </a>
     <div class="sidebar">
       <nav class="mt-2">
@@ -68,7 +68,7 @@
 
   <!-- Footer -->
   <footer class="main-footer text-center">
-    <strong>&copy; {{ date('Y') }} Admin Panel</strong>
+    <strong>&copy; {{ date('Y') }} Agatha Space</strong>
   </footer>
 
 </div>
