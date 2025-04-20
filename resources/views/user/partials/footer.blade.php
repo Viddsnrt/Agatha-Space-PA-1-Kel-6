@@ -1,11 +1,11 @@
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
 <footer class="footer-coffee text-white mt-5">
-    <div class="container py-5">
+    <div class="container-fluid py-5 px-5">
         <div class="row">
-            <!-- Logo and About -->
             <div class="col-md-4 mb-4">
                 <h2 class="logo-font">Agatha Space</h2>
-                <p>Agatha Space bukan sekadar tempat untuk menikmati kopi. Ia adalah pelarian kecil dari hiruk pikuk dunia. Tempat di mana waktu melambat, dan senja menjadi teman setia.
-                </p>
+                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
                 <div class="social-icons mt-3">
                     <a href="#"><i class="bi bi-facebook"></i></a>
                     <a href="#"><i class="bi bi-instagram"></i></a>
@@ -14,7 +14,6 @@
                 </div>
             </div>
 
-            <!-- About Links -->
             <div class="col-md-2 mb-4">
                 <h5>About</h5>
                 <ul class="list-unstyled">
@@ -25,7 +24,6 @@
                 </ul>
             </div>
 
-            <!-- Company Links -->
             <div class="col-md-2 mb-4">
                 <h5>Company</h5>
                 <ul class="list-unstyled">
@@ -35,34 +33,40 @@
                     <li><a href="#">FAQ</a></li>
                 </ul>
             </div>
-
-            <!-- Contact -->
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4 border-start ps-4">
                 <h5>Contact Us</h5>
-                <p>Akshya Nagar 2st Block 1st Cross, Ramamurthy nagar, Bangalore-560016</p>
-                <p>082349689976</p>
+                <p>Akshya Nagar 1st Block 1st Cross, Rammurthy nagar, Bangalore-560016</p>
+                <p>083249689976</p>
                 <p>agathaspace@gmail.com</p>
                 <p>www.agathaspace.com</p>
             </div>
         </div>
     </div>
 </footer>
+
 <style>
     .footer-coffee {
-        background: linear-gradient(rgba(58, 29, 0, 0.9), rgba(58, 29, 0, 0.9)), url('{{ asset('images/coffeebeans.jpg') }}') no-repeat center bottom;
+        background: linear-gradient(rgba(58, 29, 0, 0.9), rgba(58, 29, 0, 0.9)), url('your-image-path.jpg') no-repeat center center;
         background-size: cover;
         color: #fff;
-        font-family: 'Poppins', sans-serif;
+        font-family: 'Inter', sans-serif;
     }
 
     .footer-coffee h2.logo-font {
-        font-family: 'Dancing Script', cursive;
-        font-size: 2rem;
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        letter-spacing: 1px;
+    }
+
+    .footer-coffee h5 {
+        font-weight: 600;
+        margin-bottom: 1rem;
     }
 
     .footer-coffee ul li a {
         color: #ffffffcc;
         text-decoration: none;
+        font-weight: 400;
     }
 
     .footer-coffee ul li a:hover {
@@ -72,11 +76,21 @@
 
     .footer-coffee .social-icons a {
         color: white;
-        font-size: 1.2rem;
-        margin-right: 10px;
+        font-size: 1.4rem;
+        margin-right: 12px;
+        transition: color 0.3s ease;
     }
 
     .footer-coffee .social-icons a:hover {
         color: #d1a46f;
+    }
+
+    .footer-coffee p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .footer-coffee .border-start {
+        border-left: 2px solid #844f1f;
     }
 </style>
