@@ -14,5 +14,8 @@
         <div class="col-md-4">
             <x-adminlte-info-box title="Kategori" text="{{ $totalCategories }}" icon="fas fa-tags" theme="indigo" url="{{ route('admin.categories.index') }}" url-text="Lihat Semua"/>
         </div>
+        <div class="col-md-4">
+            <x-adminlte-info-box title="Galeri" text="{{ $totalGallery }}" icon="fas fa-images" theme="purple" url="{{ route('admin.gallery.index') }}" url-text="Lihat Semua"/>
+        </div>
     </div>
 @endsection

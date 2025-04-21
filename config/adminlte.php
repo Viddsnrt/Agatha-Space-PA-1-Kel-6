@@ -80,19 +80,23 @@ return [
     'password_email_url' => 'password/email',
 
     'menu' => [
-    ['header' => 'AGATHA SPACE'],
-    [
-        'text' => 'Kategori',
-        'route' => 'admin.categories.index', // sesuai route admin
-        'icon' => 'fas fa-tags',
+        ['header' => 'AGATHA SPACE'],
+        [
+            'text' => 'Kategori',
+            'route' => 'admin.categories.index',
+            'icon' => 'fas fa-tags',
+        ],
+        [
+            'text' => 'Menu',
+            'route' => 'admin.menus.index',
+            'icon' => 'fas fa-utensils',
+        ],
+        [
+            'text' => 'Galeri',
+            'route' => 'admin.gallery.index',
+            'icon' => 'fas fa-images',
+        ],
     ],
-    [
-        'text' => 'Menu',
-        'route' => 'admin.menus.index', // sesuai route admin
-        'icon' => 'fas fa-utensils',
-    ],
-],
-
 
     'filters' => [
         JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,

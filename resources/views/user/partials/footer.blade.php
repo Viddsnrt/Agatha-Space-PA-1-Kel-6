@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-4 mb-4">
                 <h2 class="logo-font">Agatha Space</h2>
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                <p>Agatha Space bukan sekadar tempat untuk menikmati kopi. Ia adalah pelarian kecil dari hiruk pikuk dunia. Tempat di mana waktu melambat, dan senja menjadi teman setia.</p>
                 <div class="social-icons mt-3">
                     <a href="#"><i class="bi bi-facebook"></i></a>
                     <a href="#"><i class="bi bi-instagram"></i></a>

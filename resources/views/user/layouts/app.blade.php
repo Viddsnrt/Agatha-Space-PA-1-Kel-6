@@ -50,9 +50,9 @@
   <nav class="navbar navbar-expand-lg navbar-light fixed-top bg-white">
     <div class="container">
       <a class="navbar-brand-wrapper" href="{{ route('home') }}">
-      <img src="{{ asset('images/SYM-LOGO.png') }}"
+      <img src="{{ asset('images/LogoAgathaSpace.jpg') }}"
      alt="Logo Agatha Space"
-     style="background-color: #eaeaea; padding: 16px; border-radius: 12px; width: 90px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);" />
+     style= padding: 16px; border-radius: 12px; width: 90px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);" />
 
 
 

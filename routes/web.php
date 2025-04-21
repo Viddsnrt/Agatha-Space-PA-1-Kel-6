@@ -8,7 +8,11 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\MenuController as AdminMenuController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\DashboardController; // <--- ini yang sebelumnya belum ada
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;  // <-- import admin controller
+use App\Http\Controllers\Auth\UserGalleryController;
+
+
 
 // ====================
 // ✨ Public (User Area)
@@ -18,7 +22,11 @@ use App\Http\Controllers\Admin\DashboardController; // <--- ini yang sebelumnya 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
 Route::get('/tentang-kami', [LandingPageController::class, 'tentangkami'])->name('tentangkami');
 Route::get('/kontak', [LandingPageController::class, 'kontak'])->name('kontak');
-Route::get('/gallery', fn () => view('user.gallery'))->name('gallery');
+
+// Galeri (user side)
+Route::get('/Galleries', [UserGalleryController::class, 'index'])->name('gallery');
+
+
 
 // Menu (user side)
 Route::get('/menu', [MenuController::class, 'index'])->name('menu');
@@ -37,11 +45,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
+
 // ========================
 // 🔐 Admin Area (Protected)
 // ========================
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard admin (menampilkan jumlah menu & kategori)
+    // Dashboard admin
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // CRUD Menu
@@ -49,4 +58,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // CRUD Kategori
     Route::resource('categories', CategoryController::class);
+
+    // CRUD Galeri (gambar saja)
+    Route::resource('gallery', AdminGalleryController::class);
 });

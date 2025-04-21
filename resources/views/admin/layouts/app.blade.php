@@ -46,6 +46,13 @@
               <i class="nav-icon fas fa-utensils"></i>
               <p>Menu</p>
             </a>
+            <li class="nav-item">
+  <a href="{{ route('admin.gallery.index') }}" class="nav-link">
+    <i class="nav-icon fas fa-images"></i>
+    <p>Galeri</p>
+  </a>
+</li>
+
           </li>
           <li class="nav-item">
             <form method="POST" action="{{ route('logout') }}">

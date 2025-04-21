@@ -1,6 +1,5 @@
 @extends('user.layouts.app')
 
-
 @section('title', 'Tentang Kami - Agatha Space')
 
 @section('content')
@@ -19,13 +18,14 @@
     .tentang-kami-page h2,
     .tentang-kami-page .fw-bold {
         font-family: 'Playfair Display', serif;
-        color: #4a2f27; /* Deep brown for headings */
-        margin-bottom: 1rem; /* Ensure space around the headings */
+        color: #4a2f27;
+        margin-bottom: 1rem;
     }
 
     .tentang-kami-page p,
     .tentang-kami-page li {
         color: #3d3d3d;
+        line-height: 1.8;
     }
 
     .tentang-kami-page .section-bg {
@@ -36,6 +36,27 @@
         max-height: 350px;
         object-fit: cover;
     }
+
+    .slogan {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #6c4f3d;
+        font-style: italic;
+        margin-top: 2rem;
+    }
+
+    .map-section {
+        margin-top: 60px;
+    }
+
+    .map-container {
+        width: 100%;
+        height: 400px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
 </style>
 
 <div class="tentang-kami-page">
@@ -43,64 +64,55 @@
     <section class="container py-5 text-center">
         <h1 class="fw-bold" data-aos="fade-up">Tentang Kami</h1>
         <p class="lead" data-aos="fade-up" data-aos-delay="200">
-            Agatha Space adalah lebih dari sekadar kafe. Kami adalah tempat bagi pecinta kopi dan makanan berkualitas tinggi
-            untuk berkumpul, berbagi cerita, dan menikmati suasana yang nyaman.
+            Agatha Space bukan sekadar tempat untuk menikmati kopi—ia adalah ruang untuk merasa, berbagi, dan meresapi keindahan.
         </p>
     </section>
 
     <section class="container py-5 section-bg rounded shadow-sm">
         <div class="row align-items-center">
             <div class="col-md-6" data-aos="fade-right">
-                <h2 class="fw-bold">Visi Kami</h2>
                 <p>
-                    Menjadi kafe terbaik di Balige dengan pelayanan terbaik, suasana yang nyaman,
-                    dan cita rasa yang tak terlupakan bagi setiap pelanggan.
+                    Tepatnya pada bulan Maret tahun 2024, berdirilah sebuah tempat yang bukan hanya menjual kopi dan makanan—tapi juga pengalaman. Agatha Space lahir dari mimpi sederhana: menciptakan ruang di mana siapa pun bisa berhenti sejenak, menikmati senja, dan meresapi ketenangan alam.
                 </p>
-                <h2 class="fw-bold mt-4">Misi Kami</h2>
-                <ul class="list-unstyled">
-                    <li>Menggunakan bahan berkualitas terbaik.</li>
-                    <li>Menyediakan layanan ramah dan profesional.</li>
-                    <li>Menciptakan suasana kafe yang nyaman dan modern.</li>
-                    <li>Terus berinovasi dalam menu dan pelayanan.</li>
-                </ul>
+                <p>
+                    Nama “Agatha” dipilih bukan tanpa alasan. Dalam bahasa Yunani, Agatha berarti "baik" atau "mulia"—sebuah doa agar tempat ini menjadi tempat yang menghadirkan kebaikan dan kehangatan, tidak hanya lewat hidangan, tapi juga dalam setiap pertemuan.
+                </p>
+                <p>
+                    Keindahan panorama sunset Danau Toba yang begitu magis membuat tempat ini cepat menjadi pilihan favorit para pelancong dan penduduk lokal yang ingin menikmati sore dengan secangkir kopi hangat.
+                </p>
+                <p>
+                    Seiring waktu, Agatha Space tumbuh menjadi lebih dari sekadar tempat nongkrong. Ia menjadi ruang cerita. Di sini, banyak kisah cinta dimulai, persahabatan dikuatkan, dan momen-momen berharga tercipta—semuanya dengan latar langit jingga yang memantul di permukaan danau.
+                </p>
+                <p>
+                    Kini, tak hanya dikenal karena lokasinya yang menakjubkan, tapi juga karena suasananya yang hangat, pelayanan yang ramah, serta menu khas yang memadukan cita rasa lokal dan sentuhan modern.
+                </p>
+                <p>
+                    Agatha Space bukan sekadar tempat untuk menikmati kopi. Ia adalah pelarian kecil dari hiruk pikuk dunia. Tempat di mana waktu melambat, dan senja menjadi teman setia.
+                </p>
+                <div class="slogan">SLOGAN: FEEL THE SPACE</div>
             </div>
             <div class="col-md-6 text-center" data-aos="fade-left">
-                <img src="{{ asset('images/agatha.jpg') }}" alt="Tentang Kami" class="img-fluid rounded shadow">
+                <img src="{{ asset('images/agatha.jpg') }}" alt="Agatha Space" class="img-fluid rounded shadow">
             </div>
         </div>
     </section>
+    <section class="container map-section py-5" data-aos="fade-up" data-aos-delay="300">
+    <h2 class="fw-bold text-center mb-4">Lokasi Agatha Space</h2>
 
-    <section class="bg-light py-5">
-        <div class="container text-center">
-            <h2 class="fw-bold" data-aos="fade-up">Keunggulan Kami</h2>
-            <div class="row mt-4">
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                <i class="bi bi-cup-hot fs-1" style="color: brown;"></i>
-                    <h4 class="mt-2">Kopi Berkualitas</h4>
-                    <p>Kami menyajikan kopi terbaik dengan biji pilihan yang diseduh oleh barista berpengalaman.</p>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
-                    <i class="bi bi-emoji-smile fs-1" style="color: brown;"></i>
-                    <h4 class="mt-2">Suasana Nyaman</h4>
-                    <p>Desain interior modern dan suasana yang cozy membuat pelanggan betah berlama-lama.</p>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="600">
-                    <i class="bi bi-heart fs-1" style="color: brown;"></i>></i>
-                    <h4 class="mt-2">Pelayanan Terbaik</h4>
-                    <p>Tim kami siap memberikan pengalaman terbaik dengan pelayanan ramah dan profesional.</p>
-                </div>
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="ratio ratio-16x9 rounded shadow-sm overflow-hidden">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3986.504636755564!2d99.05843961083272!3d2.335321357605683!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x302e050019b853bb%3A0x336533534a6698ae!2sAgatha%20Space!5e0!3m2!1sid!2sid!4v1745197083525!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    style="border:0;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="container py-5 text-center">
-        <h2 class="fw-bold" data-aos="fade-up">Galeri Agatha Space</h2>
-        <div class="row mt-4">
-            <div class="col-md-4" data-aos="zoom-in"><img src="{{ asset('assets/gallery-1.jpg') }}" class="img-fluid rounded shadow"></div>
-            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200"><img src="{{ asset('assets/gallery-2.jpg') }}" class="img-fluid rounded shadow"></div>
-            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="400"><img src="{{ asset('assets/gallery-3.jpg') }}" class="img-fluid rounded shadow"></div>
-        </div>
-    </section>
 
 </div>
 
