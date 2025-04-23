@@ -9,24 +9,21 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\MenuController as AdminMenuController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;  // <-- import admin controller
+use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Auth\UserGalleryController;
-
-
+use App\Http\Controllers\Auth\KritikSaranController;
+use App\Http\Controllers\Admin\KritikSaranController as AdminKritikSaranController;
 
 // ====================
 // ✨ Public (User Area)
 // ====================
 
-// Halaman utama
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
 Route::get('/tentang-kami', [LandingPageController::class, 'tentangkami'])->name('tentangkami');
 Route::get('/kontak', [LandingPageController::class, 'kontak'])->name('kontak');
 
 // Galeri (user side)
 Route::get('/Galleries', [UserGalleryController::class, 'index'])->name('gallery');
-
-
 
 // Menu (user side)
 Route::get('/menu', [MenuController::class, 'index'])->name('menu');
@@ -45,20 +42,31 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
+// Kritik & Saran (user input)
+Route::get('/kritik-saran', [KritikSaranController::class, 'create'])->name('kritik-saran.create');
+Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kritik-saran.store');
+
+// ✅ Kritik & Saran (public list - tampilkan yang disetujui)
+Route::get('/daftar-kritik-saran', [KritikSaranController::class, 'list'])->name('kritik-saran.list');
+
 
 // ========================
 // 🔐 Admin Area (Protected)
 // ========================
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard admin
+    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // CRUD Menu
+    // Menu 
     Route::resource('menus', AdminMenuController::class);
 
-    // CRUD Kategori
+    // Kategori
     Route::resource('categories', CategoryController::class);
 
-    // CRUD Galeri (gambar saja)
+    // Galeri
     Route::resource('gallery', AdminGalleryController::class);
+
+    // Kritik & Saran - Admin Panel
+    Route::get('/kritik-saran', [AdminKritikSaranController::class, 'index'])->name('kritik-saran.index');
+    Route::post('/kritik-saran/{id}/update-tampilkan', [AdminKritikSaranController::class, 'updateTampilkan'])->name('kritik-saran.updateTampilkan');
 });

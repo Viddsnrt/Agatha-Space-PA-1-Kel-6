@@ -8,14 +8,16 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <x-adminlte-info-box title="Menu" text="{{ $totalMenus }}" icon="fas fa-coffee" theme="teal" url="{{ route('admin.menus.index') }}" url-text="Lihat Semua"/>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <x-adminlte-info-box title="Kategori" text="{{ $totalCategories }}" icon="fas fa-tags" theme="indigo" url="{{ route('admin.categories.index') }}" url-text="Lihat Semua"/>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <x-adminlte-info-box title="Galeri" text="{{ $totalGallery }}" icon="fas fa-images" theme="purple" url="{{ route('admin.gallery.index') }}" url-text="Lihat Semua"/>
         </div>
+        <div class="col-md-3">
+        <x-adminlte-info-box title="Kritik & Saran" text="{{ $totalKritikSaran }}" icon="fas fa-comment-dots" theme="orange" url="/admin/kritik-saran" url-text="Lihat Semua"/>
     </div>
 @endsection

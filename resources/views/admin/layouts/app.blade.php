@@ -51,6 +51,12 @@
     <i class="nav-icon fas fa-images"></i>
     <p>Galeri</p>
   </a>
+
+  <li class="nav-item">
+  <a href="{{ route('admin.kritik-saran.index') }}" class="nav-link">
+    <i class="nav-icon fas fa-comment-dots"></i> 
+    <p>Kritik & Saran</p>
+  </a>
 </li>
 
           </li>

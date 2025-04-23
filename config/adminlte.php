@@ -96,6 +96,12 @@ return [
             'route' => 'admin.gallery.index',
             'icon' => 'fas fa-images',
         ],
+
+        [
+            'text' => 'Kritik & Saran',
+            'route' => 'admin.kritik-saran.index',
+            'icon' => 'fas fa-images',
+        ],
     ],
 
     'filters' => [

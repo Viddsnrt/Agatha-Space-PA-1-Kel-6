@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use App\Models\Category;
 use App\Models\Gallery;    // ← import model Gallery
+use App\Models\KritikSaran;
 
 class DashboardController extends Controller
 {
@@ -13,12 +14,14 @@ class DashboardController extends Controller
     {
         $totalMenus      = Menu::count();
         $totalCategories = Category::count();
-        $totalGallery  = Gallery::count();    // ← hitung jumlah galeri
+        $totalGallery  = Gallery::count();   
+        $totalKritikSaran = KritikSaran::count(); // ← hitung jumlah galeri
 
         return view('admin.dashboard', compact(
             'totalMenus',
             'totalCategories',
-            'totalGallery'
+            'totalGallery',
+            'totalKritikSaran'
         ));
     }
 }
