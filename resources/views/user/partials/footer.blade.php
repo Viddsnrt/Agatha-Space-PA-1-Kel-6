@@ -1,96 +1,139 @@
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-
+<!-- Footer -->
 <footer class="footer-coffee text-white mt-5">
     <div class="container-fluid py-5 px-5">
         <div class="row">
-            <div class="col-md-4 mb-4">
-                <h2 class="logo-font">Agatha Space</h2>
-                <p>Agatha Space bukan sekadar tempat untuk menikmati kopi. Ia adalah pelarian kecil dari hiruk pikuk dunia. Tempat di mana waktu melambat, dan senja menjadi teman setia.</p>
-                <div class="social-icons mt-3">
-                    <a href="#"><i class="bi bi-facebook"></i></a>
-                    <a href="#"><i class="bi bi-instagram"></i></a>
-                    <a href="#"><i class="bi bi-youtube"></i></a>
-                    <a href="#"><i class="bi bi-twitter"></i></a>
+            <!-- Brand & Sosmed -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h2 class="logo-font mb-3">Agatha Space</h2>
+                <p>Agatha Space bukan sekadar tempat menikmati kopi, tapi tempat beristirahat dari hiruk pikuk dunia, di mana waktu melambat dan senja menemani.</p>
+                <div class="social-icons mt-4">
+                    <a href="https://wa.me/6281234567890" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://instagram.com/yourusername" target="_blank"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
-            <div class="col-md-2 mb-4">
-                <h5>About</h5>
+            <!-- Navigasi -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5 class="mb-3">Navigasi</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#">Menu</a></li>
-                    <li><a href="#">Features</a></li>
-                    <li><a href="#">News & Blogs</a></li>
-                    <li><a href="#">Help & Supports</a></li>
+                    <li><a href="{{ route('home') }}">Beranda</a></li>
+                    <li><a href="{{ route('tentangkami') }}">Tentang Kami</a></li>
+                    <li><a href="{{ route('menu') }}">Menu</a></li>
+                    <li><a href="{{ route('reservasi') }}">Reservasi</a></li>
+                    <li><a href="{{ route('gallery') }}">Galeri</a></li>
+                    <li><a href="{{ route('kritik-saran.create') }}">Kritik & Saran</a></li>
                 </ul>
             </div>
 
-            <div class="col-md-2 mb-4">
-                <h5>Company</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#">How we work</a></li>
-                    <li><a href="#">Terms of service</a></li>
-                    <li><a href="#">Pricing</a></li>
-                    <li><a href="#">FAQ</a></li>
+            <!-- Kontak -->
+            <div class="col-lg-5 col-md-12 mb-4">
+                <h5 class="mb-3">Hubungi Kami</h5>
+                <ul class="list-unstyled contact-info">
+                    <li><i class="fas fa-map-marker-alt me-2"></i> 83P6+5FP, Jl. Siliwangi, Kec. Balige, Toba, Sumatera Utara, Indonesia</li>
+                    <li><i class="fas fa-phone me-2"></i> 0832-4968-9976</li>
+                    <li><i class="fas fa-envelope me-2"></i> agathaspace@gmail.com</li>
+                    <li><i class="fas fa-globe me-2"></i> www.agathaspace.com</li>
                 </ul>
             </div>
-            <div class="col-md-4 mb-4 border-start ps-4">
-                <h5>Contact Us</h5>
-                <p>Akshya Nagar 1st Block 1st Cross, Rammurthy nagar, Bangalore-560016</p>
-                <p>083249689976</p>
-                <p>agathaspace@gmail.com</p>
-                <p>www.agathaspace.com</p>
-            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="text-center mt-4 small-text" data-aos="fade-up" data-aos-duration="1000" data-aos-offset="100">
+            <p>&copy; {{ date('Y') }} Agatha Space. Semua Hak Dilindungi.</p>
         </div>
     </div>
 </footer>
 
+<!-- CSS Footer Style -->
 <style>
+.footer-coffee {
+    background: linear-gradient(rgba(58, 29, 0, 0.85), rgba(58, 29, 0, 0.85)),
+                url('/path-ke-gambar-background-kamu.jpg') no-repeat center center;
+    background-size: cover;
+    background-attachment: fixed;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+}
+
+.footer-coffee .logo-font {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.3rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.footer-coffee h5 {
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.footer-coffee ul {
+    padding: 0;
+}
+
+.footer-coffee ul li {
+    margin-bottom: 10px;
+}
+
+.footer-coffee ul li a {
+    color: #ffffffcc;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-coffee ul li a:hover {
+    color: #ffd699;
+    text-decoration: underline;
+    transform: translateX(5px);
+}
+
+.footer-coffee .social-icons a {
+    color: #ffffff;
+    font-size: 1.8rem;
+    margin-right: 15px;
+    transition: transform 0.5s ease, color 0.3s;
+    display: inline-block;
+}
+
+.footer-coffee .social-icons a:hover {
+    color: #ffd699;
+    transform: scale(1.3) rotate(5deg);
+    text-shadow: 0 0 10px #ffd699;
+}
+
+.footer-coffee .contact-info li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.footer-coffee .contact-info i {
+    color: #ffd699;
+}
+
+.footer-coffee .small-text {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-top: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-coffee .logo-font {
+        font-size: 2rem;
+    }
+
     .footer-coffee {
-        background: linear-gradient(rgba(58, 29, 0, 0.9), rgba(58, 29, 0, 0.9)), url('your-image-path.jpg') no-repeat center center;
-        background-size: cover;
-        color: #fff;
-        font-family: 'Inter', sans-serif;
+        text-align: center;
     }
 
-    .footer-coffee h2.logo-font {
-        font-family: 'Playfair Display', serif;
-        font-size: 2.5rem;
-        letter-spacing: 1px;
+    .footer-coffee .social-icons {
+        justify-content: center;
     }
-
-    .footer-coffee h5 {
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-
-    .footer-coffee ul li a {
-        color: #ffffffcc;
-        text-decoration: none;
-        font-weight: 400;
-    }
-
-    .footer-coffee ul li a:hover {
-        text-decoration: underline;
-        color: #fff;
-    }
-
-    .footer-coffee .social-icons a {
-        color: white;
-        font-size: 1.4rem;
-        margin-right: 12px;
-        transition: color 0.3s ease;
-    }
-
-    .footer-coffee .social-icons a:hover {
-        color: #d1a46f;
-    }
-
-    .footer-coffee p {
-        font-size: 0.95rem;
-        line-height: 1.6;
-    }
-
-    .footer-coffee .border-start {
-        border-left: 2px solid #844f1f;
-    }
+}
 </style>
+
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">

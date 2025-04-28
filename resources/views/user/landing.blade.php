@@ -56,7 +56,7 @@
         }
 
         .hero {
-            background: url('images/nasiayampenyet.jpeg') no-repeat center center/cover;
+            background: url('images/ag.jpg') no-repeat center center/cover;
             height: 100vh;
             display: flex;
             align-items: center;
@@ -103,6 +103,92 @@
             text-align: center;
             color: #6c757d;
         }
+
+        .btn-warning {
+    background-color: #f9c76a !important;
+    color: #000;
+    border: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-warning:hover {
+    background-color: #e6b95e !important;
+    color: #fff;
+}
+
+.rounded-pill {
+    border-radius: 50rem !important;
+}
+
+<style>
+    .btn-warning {
+        background-color: #f9c76a !important;
+        color: #000;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .btn-warning:hover {
+        background-color: #e6b95e !important;
+        color: #fff;
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+
+    .hover-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.hover-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.why-choose-us {
+  background: #fff7f0;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-alasan {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.card-alasan:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.icon-alasan {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.card-alasan h5 {
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.card-alasan p {
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 8px;
+}
+</style>
+
+
     </style>
 </head>
 <body>
@@ -119,15 +205,40 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Beranda</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('tentangkami') ? 'active' : '' }}" href="{{ route('tentangkami') }}">Tentang Kami</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}" href="{{ route('menu') }}">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('reservasi') ? 'active' : '' }}" href="{{ route('reservasi') }}">Reservasi</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}">Galeri</a></li>
-                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('kritik-saran.create') ? 'active' : '' }}" href="{{ route('kritik-saran.create') }}">Kritik & Saran</a></li>
+    <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item"><a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Beranda</a></li>
+        <li class="nav-item"><a class="nav-link {{ request()->routeIs('tentangkami') ? 'active' : '' }}" href="{{ route('tentangkami') }}">Tentang Kami</a></li>
+        <li class="nav-item"><a class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}" href="{{ route('menu') }}">Menu</a></li>
+        <li class="nav-item"><a class="nav-link {{ request()->routeIs('reservasi') ? 'active' : '' }}" href="{{ route('reservasi') }}">Reservasi</a></li>
+        <li class="nav-item"><a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}">Galeri</a></li>
+        <li class="nav-item"><a class="nav-link {{ request()->routeIs('kritik-saran.create') ? 'active' : '' }}" href="{{ route('kritik-saran.create') }}">Kritik & Saran</a></li>
+
+        @guest
+            <li class="nav-item ms-3">
+                <a href="{{ route('login') }}" class="btn btn-warning rounded-pill px-4 me-2">Masuk</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('register') }}" class="btn btn-warning rounded-pill px-4">Daftar</a>
+            </li>
+        @else
+            <li class="nav-item dropdown ms-3">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                    {{ Auth::user()->name }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{{ route('logout') }}"
+                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        Logout
+                    </a></li>
                 </ul>
-            </div>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
+            </li>
+        @endguest
+    </ul>
+</div>
+
         </div>
     </header>
 
@@ -141,46 +252,95 @@
     </section>
 
     <!-- Tentang Kami -->
-    <section id="about" class="container py-5">
-        <div class="row align-items-center">
-            <div class="col-md-6" data-aos="fade-up">
-                <h2 class="fw-bold">Tentang Kami</h2>
-                <p>Agatha Space adalah tempat terbaik untuk menikmati kopi dan makanan lezat di Balige. Kami menawarkan suasana nyaman dengan pelayanan ramah serta menu makanan dan minuman berkualitas.</p>
-            </div>
-            <div class="col-md-6 text-center" data-aos="fade-up">
-                <img src="assets/about-image.jpg" alt="Tentang Kami" class="img-fluid rounded shadow">
-            </div>
+  <!-- Tentang Kami -->
+<section id="about" class="container py-5">
+    <div class="row align-items-center">
+        <div class="col-md-6" data-aos="fade-up">
+            <h2 class="fw-bold">Tentang Kami</h2>
+            <p>Agatha Space adalah tempat terbaik untuk menikmati kopi dan makanan lezat di Balige. Kami menawarkan suasana nyaman, pelayanan ramah, dan berbagai menu berkualitas yang siap memanjakan lidah Anda.</p>
+            <a href="{{ route('tentangkami') }}" class="btn btn-warning rounded-pill mt-3">Lihat Selengkapnya</a>
         </div>
-    </section>
+        <div class="col-md-6 text-center" data-aos="fade-up" data-aos-delay="100">
+            <img src="{{ asset('images/LogoAgathaSpace.jpg') }}" alt="Agatha Space" class="img-fluid rounded shadow" style="max-width: 80%;">
+        </div>
+    </div>
+</section>
+
 
     <!-- Menu Section -->
-    <section id="menu" class="container py-5 menu-section">
-        <h2 class="text-center fw-bold mb-4">Menu Kami</h2>
-        <div class="row justify-content-center">
-            <div class="col-md-3 text-center mb-4" data-aos="fade-up">
-                <img src="assets/menu-1.jpg" alt="Kopi Hitam" class="img-fluid">
-                <h4 class="mt-2">Kopi Hitam</h4>
-                <p class="fw-bold text-primary">Rp 10.000</p>
-            </div>
-            <div class="col-md-3 text-center mb-4" data-aos="fade-up" data-aos-delay="100">
-                <img src="assets/menu-2.jpg" alt="Latte" class="img-fluid">
-                <h4 class="mt-2">Latte</h4>
-                <p class="fw-bold text-primary">Rp 15.000</p>
-            </div>
-            <div class="col-md-3 text-center mb-4" data-aos="fade-up" data-aos-delay="200">
-                <img src="assets/menu-3.jpg" alt="Nasi Ayam Penyet" class="img-fluid">
-                <h4 class="mt-2">Nasi Ayam Penyet</h4>
-                <p class="fw-bold text-primary">Rp 25.000</p>
-            </div>
+    <section id="best-seller" class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Menu Terbaik Kami</h2>
+            <p class="text-muted">Nikmati menu pilihan terbaik dari Agatha Space</p>
         </div>
-    </section>
+        <div class="row">
+            @foreach ($bestSellers as $menu)
+                <div class="col-md-6 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
+                    <div class="card h-100 shadow-sm border-0 hover-card">
+                        <img src="{{ asset('storage/' . $menu->gambar) }}" class="card-img-top" alt="{{ $menu->nama }}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ $menu->nama }}</h5>
+                            <p class="card-text text-muted mb-3">{{ Str::limit($menu->deskripsi, 60) }}</p>
+                            <div class="mt-auto">
+                                <p class="fw-bold text-primary mb-2">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
+                                <a href="{{ route('menu') }}" class="btn btn-primary w-100">Pesan</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+
+            <!-- Section Alasan Memilih Agatha Space -->
+<section class="why-choose-us py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title" data-aos="fade-up">Mengapa Memilih Agatha Space?</h2>
+      <p data-aos="fade-up" data-aos-delay="100">
+        Kami menawarkan pengalaman yang membuat kunjungan Anda lebih dari sekadar menikmati makanan dan minuman.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+        <div class="card-alasan text-center p-4">
+          <img src="images/icons/suasana-nyaman.jpg" alt="Suasana Nyaman" class="icon-alasan mb-3">
+          <h5>Suasana Nyaman</h5>
+          <p>Tempat yang tenang dan cozy, cocok untuk bersantai, bekerja, atau berbincang santai.</p>
+        </div>
+      </div>
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+        <div class="card-alasan text-center p-4">
+          <img src="/images/icons/pelayanan-ramah.jpg" alt="Pelayanan Ramah" class="icon-alasan mb-3">
+          <h5>Pelayanan Ramah</h5>
+          <p>Staff kami siap melayani Anda dengan penuh keramahan dan kehangatan.</p>
+        </div>
+      </div>
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+        <div class="card-alasan text-center p-4">
+          <img src="/images/icons/fasilitas.png" alt="Fasilitas Lengkap" class="icon-alasan mb-3">
+          <h5>Fasilitas Lengkap</h5>
+          <p>Dilengkapi Wi-Fi cepat, colokan listrik, dan ruangan ber-AC untuk kenyamanan maksimal Anda.</p>
+        </div>
+      </div>
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="500">
+        <div class="card-alasan text-center p-4">
+          <img src="/images/icons/lokasi-strategis.jpg" alt="Lokasi Strategis" class="icon-alasan mb-3">
+          <h5>Lokasi Strategis</h5>
+          <p>Mudah diakses dari pusat kota, cocok untuk meeting, belajar, atau sekadar hangout.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; {{ date('Y') }} Agatha Space. Semua Hak Dilindungi.</p>
-        </div>
-    </footer>
+    @include('user.partials.footer')
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

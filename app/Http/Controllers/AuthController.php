@@ -14,16 +14,25 @@ class AuthController extends Controller
     }
 
     public function authenticate(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
+{
+    $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->route('admin.dashboard');
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+
+        // Cek apakah user adalah admin
+        if (Auth::user()->is_admin) {
+            return redirect()->route('admin.dashboard'); // ke dashboard admin
+        } else {
+            return redirect()->route('home'); // ke halaman home biasa
         }
-
-        return back()->with('error', 'Email atau kata sandi salah!');
     }
+
+    return back()->withErrors([
+        'email' => 'Email atau password salah!',
+    ]);
+}
+
 
     public function showRegister()
     {

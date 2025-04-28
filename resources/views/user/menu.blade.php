@@ -6,6 +6,9 @@
     <div class="container">
         <h1 class="mb-4">Menu Agatha Space</h1>
 
+
+        
+
         @foreach ($categories as $category)
             <h3>{{ $category->nama_kategori }}</h3>
             <div class="row">

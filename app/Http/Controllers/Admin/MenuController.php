@@ -37,7 +37,7 @@ class MenuController extends Controller
             'nama' => 'required',
             'deskripsi' => 'required',
             'harga' => 'required|numeric',
-            'gambar' => 'required|image|max:2048',
+            'gambar' => 'required|image|',
             'kategori_id' => 'required|exists:categories,id'
         ]);
 
