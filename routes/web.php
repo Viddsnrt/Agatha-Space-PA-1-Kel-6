@@ -13,6 +13,8 @@ use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Auth\UserGalleryController;
 use App\Http\Controllers\Auth\KritikSaranController;
 use App\Http\Controllers\Admin\KritikSaranController as AdminKritikSaranController;
+use App\Http\Controllers\Auth\CartController;
+use App\Http\Controllers\Auth\PromoEventController;
 
 // ====================
 // ✨ Public (User Area)
@@ -49,6 +51,20 @@ Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kri
 // ✅ Kritik & Saran (public list - tampilkan yang disetujui)
 Route::get('/daftar-kritik-saran', [KritikSaranController::class, 'list'])->name('kritik-saran.list');
 
+// Tambah ke keranjang
+Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+
+// Lihat keranjang
+Route::get('/cart', [CartController::class, 'view'])->name('cart.view');
+Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/{id}/remove', [CartController::class, 'remove'])->name('cart.remove');
+
+// Promo & Event
+Route::get('/promo-event', [PromoEventController::class, 'index'])->name('user.promo-event');
+Route::get('/promo-event/{id}', [UserPromoEventController::class, 'show'])->name('promo-event.show');
+
+
+
 
 // ========================
 // 🔐 Admin Area (Protected)
@@ -66,7 +82,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Galeri
     Route::resource('gallery', AdminGalleryController::class);
 
-    // Kritik & Saran - Admin Panel
+    // Kritik & Saran 
     Route::get('/kritik-saran', [AdminKritikSaranController::class, 'index'])->name('kritik-saran.index');
     Route::post('/kritik-saran/{id}/update-tampilkan', [AdminKritikSaranController::class, 'updateTampilkan'])->name('kritik-saran.updateTampilkan');
+
+    // Promo & Event
+    Route::resource('promo-event', \App\Http\Controllers\Admin\PromoEventController::class);
+
 });
+

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>@yield('title', 'Agatha Space')</title>
@@ -71,6 +73,15 @@
           <li class="nav-item"><a class="nav-link {{ request()->routeIs('reservasi') ? 'active' : '' }}" href="{{ route('reservasi') }}">Reservasi</a></li>
           <li class="nav-item"><a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}">Galeri</a></li>
           <li class="nav-item"><a class="nav-link {{ request()->routeIs('kritik-saran.create') ? 'active' : '' }}" href="{{ route('kritik-saran.create') }}">Kritik & Saran</a>
+          <li class="nav-item">
+    <a class="nav-link" href="{{ route('cart.view') }}">
+        <i class="fas fa-shopping-cart"></i> <!-- Icon keranjang -->
+        @if(session('cart'))
+            <span class="badge bg-danger">{{ count(session('cart')) }}</span>
+        @endif
+    </a>
+</li>
+
 </li>
 
         </ul>

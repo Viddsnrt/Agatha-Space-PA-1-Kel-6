@@ -30,7 +30,7 @@
                 <h5 class="mb-3">Hubungi Kami</h5>
                 <ul class="list-unstyled contact-info">
                     <li><i class="fas fa-map-marker-alt me-2"></i> 83P6+5FP, Jl. Siliwangi, Kec. Balige, Toba, Sumatera Utara, Indonesia</li>
-                    <li><i class="fas fa-phone me-2"></i> 0832-4968-9976</li>
+                    <li><i class="fas fa-phone me-2"></i>+62 878 9421 0997</li>
                     <li><i class="fas fa-envelope me-2"></i> agathaspace@gmail.com</li>
                     <li><i class="fas fa-globe me-2"></i> www.agathaspace.com</li>
                 </ul>

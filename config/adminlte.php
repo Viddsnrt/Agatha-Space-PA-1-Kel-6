@@ -102,6 +102,12 @@ return [
             'route' => 'admin.kritik-saran.index',
             'icon' => 'fas fa-images',
         ],
+
+        [
+            'text' => 'Promo & Event ',
+            'route' => 'admin.promo-event.index',
+            'icon' => 'fas fa-bullhorn',
+        ],
     ],
 
     'filters' => [

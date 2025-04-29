@@ -57,6 +57,14 @@
     <i class="nav-icon fas fa-comment-dots"></i> 
     <p>Kritik & Saran</p>
   </a>
+
+  <li class="nav-item">
+  <a href="{{ route('admin.promo-event.index') }}" class="nav-link">
+    <i class="nav-icon fas fa-bullhorn"></i>
+    <p>Promo & Event</p>
+  </a>
+</li>
+
 </li>
 
           </li>
