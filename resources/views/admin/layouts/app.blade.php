@@ -63,7 +63,16 @@
     <i class="nav-icon fas fa-bullhorn"></i>
     <p>Promo & Event</p>
   </a>
+
+  <li class="nav-item">
+  <a href="{{ route('admin.table.index') }}" class="nav-link">
+    <i class="nav-icon fas fa-concierge-bell "></i>
+    <p>Reservasi</p>
+  </a>
 </li>
+
+</li>
+
 
 </li>
 

@@ -24,4 +24,9 @@
     <div class="col-md-3">
         <x-adminlte-info-box title="Promo & Event" text="{{ $totalPromoEvent }}" icon="fas fa-bullhorn" theme="warning"  url="/admin/promo-event" url-text="Lihat Semua"/>
     </div>
+
+    <div class="col-md-3">
+    <x-adminlte-info-box title="Reservasi Meja" text="{{ $totalTable }}" icon="fas fa-concierge-bell" theme="olive" url="/admin/table" url-text="Lihat Semua"/>
+</div>
+
 @endsection

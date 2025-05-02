@@ -15,6 +15,9 @@ use App\Http\Controllers\Auth\KritikSaranController;
 use App\Http\Controllers\Admin\KritikSaranController as AdminKritikSaranController;
 use App\Http\Controllers\Auth\CartController;
 use App\Http\Controllers\Auth\PromoEventController;
+use App\Http\Controllers\Admin\TableController;
+use App\Http\Controllers\Auth\ReservationPublicController;
+
 
 // ====================
 // ✨ Public (User Area)
@@ -65,6 +68,12 @@ Route::get('/promo-event/{id}', [UserPromoEventController::class, 'show'])->name
 
 
 
+Route::get('/reservasi', [ReservationPublicController::class, 'daftar'])->name('reservasi');
+Route::post('/reservasi/kirim', [ReservationPublicController::class, 'kirim'])->name('reservasi.kirim');
+
+Route::get('/reservasi', [\App\Http\Controllers\Auth\TablePublicController::class, 'index'])->name('reservasi');
+
+
 
 // ========================
 // 🔐 Admin Area (Protected)
@@ -88,6 +97,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Promo & Event
     Route::resource('promo-event', \App\Http\Controllers\Admin\PromoEventController::class);
+
+    Route::resource('table', \App\Http\Controllers\Admin\TableController::class);
+
+    Route::get('/admin/reservation/{id}/edit', [ReservationController::class, 'edit'])->name('admin.reservation.edit');
+Route::put('/admin/reservation/{id}', [ReservationController::class, 'update'])->name('admin.reservation.update');
+
+Route::resource('reservation', \App\Http\Controllers\Admin\ReservationController::class);
 
 });
 

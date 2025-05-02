@@ -30,7 +30,8 @@
         @forelse ($menus as $menu)
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow rounded-4">
-                    <img src="{{ asset('storage/' . $menu->gambar) }}" class="card-img-top" alt="{{ $menu->nama }}" style="height: 200px; object-fit: cover;">
+                <img src="{{ asset('storage/' . $menu->gambar) }}" class="card-img-top p-3" alt="{{ $menu->nama }}" style="height: 200px; object-fit: contain; background-color: #f8f9fa;">
+
                     <div class="card-body">
                         <h5 class="card-title">{{ $menu->nama }}</h5>
                         <p class="card-text">{{ $menu->deskripsi }}</p>

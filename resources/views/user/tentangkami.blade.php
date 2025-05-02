@@ -57,6 +57,36 @@
         box-shadow: 0 0 20px rgba(0,0,0,0.1);
     }
 
+    .operasional {
+        margin-top: 40px;
+        padding: 20px;
+        background-color: #fff5eb;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .operasional h4 {
+        font-family: 'Playfair Display', serif;
+        color: #4a2f27;
+    }
+
+    .status-buka {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 8px 15px;
+        border-radius: 5px;
+        display: inline-block;
+        margin-top: 10px;
+    }
+
+    .status-tutup {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 8px 15px;
+        border-radius: 5px;
+        display: inline-block;
+        margin-top: 10px;
+    }
 </style>
 
 <div class="tentang-kami-page">
@@ -95,25 +125,61 @@
                 <img src="{{ asset('images/agatha.jpg') }}" alt="Agatha Space" class="img-fluid rounded shadow">
             </div>
         </div>
+        <div class="operasional mt-5" data-aos="fade-up" data-aos-delay="200">
+    <h4>Jam Operasional</h4>
+    <p class="mb-1"><strong>Mon-Fri</strong>: 11:00 - 16:00 WIB</p>
+    <p class="mb-3"><strong>Sat-Sun</strong>: 11:00 - 23:00 WIB</p>
+    <div id="status-operasional"></div>
+</div>
     </section>
-    <section class="container map-section py-5" data-aos="fade-up" data-aos-delay="300">
-    <h2 class="fw-bold text-center mb-4">Lokasi Agatha Space</h2>
 
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-10 col-lg-8">
-            <div class="ratio ratio-16x9 rounded shadow-sm overflow-hidden">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3986.504636755564!2d99.05843961083272!3d2.335321357605683!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x302e050019b853bb%3A0x336533534a6698ae!2sAgatha%20Space!5e0!3m2!1sid!2sid!4v1745197083525!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    style="border:0;"
-                    allowfullscreen=""
-                    loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
+    <section class="container map-section py-5" data-aos="fade-up" data-aos-delay="300">
+        <h2 class="fw-bold text-center mb-4">Lokasi Agatha Space</h2>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="ratio ratio-16x9 rounded shadow-sm overflow-hidden">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3986.504636755564!2d99.05843961083272!3d2.335321357605683!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x302e050019b853bb%3A0x336533534a6698ae!2sAgatha%20Space!5e0!3m2!1sid!2sid!4v1745197083525!5m2!1sid!2sid"
+                        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-
+    </section>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const now = new Date();
+
+        // Hitung jam dalam zona WIB (UTC+7)
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const wibTime = new Date(utc + (7 * 60 * 60 * 1000));
+
+        const day = wibTime.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const hour = wibTime.getHours();
+        const minute = wibTime.getMinutes();
+
+        const status = document.getElementById('status-operasional');
+
+        let openTime, closeTime;
+
+        if (day >= 1 && day <= 5) { // Mon-Fri
+            openTime = 11;
+            closeTime = 22;
+        } else { // Sat-Sun
+            openTime = 11;
+            closeTime = 23;
+        }
+
+        if (hour >= openTime && (hour < closeTime || (hour === closeTime && minute === 0))) {
+            status.innerHTML = '<div class="status-buka">Kami <strong>BUKA</strong> sekarang</div>';
+        } else {
+            status.innerHTML = '<div class="status-tutup">Kami <strong>TUTUP</strong> sekarang</div>';
+        }
+    });
+</script>
+
 
 @endsection

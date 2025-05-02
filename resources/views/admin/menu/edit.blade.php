@@ -18,7 +18,8 @@
 
         <div class="mb-3">
             <label>Harga</label>
-            <input type="number" name="harga" class="form-control" value="{{ $menu->harga }}" required>
+            <input type="text" name="harga" id="harga" class="form-control" value="{{ old('harga', isset($menu) ? 'Rp' . number_format($menu->harga, 0, ',', '.') : '') }}" required>
+
         </div>
 
         <div class="mb-3">
@@ -46,3 +47,19 @@
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    const inputHarga = document.getElementById('harga');
+
+    inputHarga.addEventListener('input', function (e) {
+        let value = this.value.replace(/[^0-9]/g, ''); // Hapus semua karakter non-angka
+        if (value) {
+            this.value = 'Rp' + parseInt(value).toLocaleString('id-ID'); // Format dengan titik, tanpa spasi
+        } else {
+            this.value = '';
+        }
+    });
+</script>
+@endpush
+

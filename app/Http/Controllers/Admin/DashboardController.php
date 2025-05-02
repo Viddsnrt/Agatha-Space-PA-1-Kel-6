@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Gallery;    // ← import model Gallery
 use App\Models\KritikSaran;
 use App\Models\PromoEvent;
+use App\Models\Table;
 
 class DashboardController extends Controller
 {
@@ -18,13 +19,15 @@ class DashboardController extends Controller
         $totalGallery  = Gallery::count();   
         $totalKritikSaran = KritikSaran::count(); 
         $totalPromoEvent = PromoEvent::count();
+        $totalTable = Table::count();
 
         return view('admin.dashboard', compact(
             'totalMenus',
             'totalCategories',
             'totalGallery',
             'totalKritikSaran',
-            'totalPromoEvent'
+            'totalPromoEvent',
+            'totalTable'
         ));
     }
 }

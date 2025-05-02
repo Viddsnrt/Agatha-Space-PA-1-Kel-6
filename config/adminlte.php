@@ -108,6 +108,12 @@ return [
             'route' => 'admin.promo-event.index',
             'icon' => 'fas fa-bullhorn',
         ],
+
+        [
+            'text' => 'Reservasi',
+            'route' => 'admin.table.index',
+            'icon' => 'fas fa-concierge-bell ',
+        ],
     ],
 
     'filters' => [

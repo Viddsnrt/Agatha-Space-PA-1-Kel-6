@@ -14,7 +14,6 @@ class MenuController extends Controller
     {
         $query = Menu::with('category')->latest();
 
-        // Filter berdasarkan kategori jika ada
         if ($request->has('kategori_id') && $request->kategori_id != '') {
             $query->where('kategori_id', $request->kategori_id);
         }
@@ -36,17 +35,20 @@ class MenuController extends Controller
         $request->validate([
             'nama' => 'required',
             'deskripsi' => 'required',
-            'harga' => 'required|numeric',
-            'gambar' => 'required|image|',
+            'harga' => 'required',
+            'gambar' => 'required|image',
             'kategori_id' => 'required|exists:categories,id'
         ]);
+
+        // Bersihkan harga (hapus "Rp", titik, spasi)
+        $harga = preg_replace('/\D/', '', $request->harga);
 
         $gambar = $request->file('gambar')->store('menus', 'public');
 
         Menu::create([
             'nama' => $request->nama,
             'deskripsi' => $request->deskripsi,
-            'harga' => $request->harga,
+            'harga' => $harga,
             'gambar' => $gambar,
             'kategori_id' => $request->kategori_id,
         ]);
@@ -65,12 +67,15 @@ class MenuController extends Controller
         $request->validate([
             'nama' => 'required',
             'deskripsi' => 'required',
-            'harga' => 'required|numeric',
+            'harga' => 'required',
             'kategori_id' => 'required|exists:categories,id',
             'gambar' => 'nullable|image|max:2048',
         ]);
 
-        $data = $request->only('nama', 'deskripsi', 'harga', 'kategori_id');
+        $data = $request->only('nama', 'deskripsi', 'kategori_id');
+
+        // Bersihkan harga (hapus "Rp", titik, spasi)
+        $data['harga'] = preg_replace('/\D/', '', $request->harga);
 
         if ($request->hasFile('gambar')) {
             if ($menu->gambar) {
