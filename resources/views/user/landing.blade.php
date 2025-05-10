@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -195,52 +197,96 @@
 
     <!-- Navbar -->
     <header class="navbar navbar-expand-lg navbar-light fixed-top bg-white">
-        <div class="container">
-            <a class="navbar-brand-wrapper" href="{{ route('home') }}">
-                <img src="{{ asset('images/LogoAgathaSpace.jpg') }}" alt="Logo Agatha Space"
-                style="padding: 16px; border-radius: 12px; width: 90px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);" />
-                <span class="navbar-brand-text">Agatha Space</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ms-auto align-items-center">
-        <li class="nav-item"><a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Beranda</a></li>
-        <li class="nav-item"><a class="nav-link {{ request()->routeIs('tentangkami') ? 'active' : '' }}" href="{{ route('tentangkami') }}">Tentang Kami</a></li>
-        <li class="nav-item"><a class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}" href="{{ route('menu') }}">Menu</a></li>
-        <li class="nav-item"><a class="nav-link {{ request()->routeIs('reservasi') ? 'active' : '' }}" href="{{ route('reservasi') }}">Reservasi</a></li>
-        <li class="nav-item"><a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}">Galeri</a></li>
-        <li class="nav-item"><a class="nav-link {{ request()->routeIs('kritik-saran.create') ? 'active' : '' }}" href="{{ route('kritik-saran.create') }}">Kritik & Saran</a></li>
+    <div class="container">
+        <a class="navbar-brand-wrapper" href="{{ route('home') }}">
+            <img src="{{ asset('images/LogoAgathaSpace.jpg') }}" alt="Logo Agatha Space">
+            <span class="navbar-brand-text">Agatha Space</span>
+        </a>
 
-        @guest
-            <li class="nav-item ms-3">
-                <a href="{{ route('login') }}" class="btn btn-warning rounded-pill px-4 me-2">Masuk</a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('register') }}" class="btn btn-warning rounded-pill px-4">Daftar</a>
-            </li>
-        @else
-            <li class="nav-item dropdown ms-3">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                    {{ Auth::user()->name }}
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="{{ route('logout') }}"
-                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        Logout
-                    </a></li>
-                </ul>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                    @csrf
-                </form>
-            </li>
-        @endguest
-    </ul>
-</div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
+                        <i class="fas fa-home me-1"></i>Beranda
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('tentangkami') ? 'active' : '' }}" href="{{ route('tentangkami') }}">
+                        <i class="fas fa-users me-1"></i>Tentang Kami
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}" href="{{ route('menu') }}">
+                        <i class="fas fa-utensils me-1"></i>Menu
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('reservasi') ? 'active' : '' }}" href="{{ route('reservasi') }}">
+                        <i class="fas fa-calendar-check me-1"></i>Reservasi
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}">
+                        <i class="fas fa-image me-1"></i>Galeri
+                    </a>
+                </li>
+                <li class="nav-item">
+    @auth
+        <a class="nav-link {{ request()->routeIs('kritik-saran.create') ? 'active' : '' }}"
+           href="{{ route('kritik-saran.create') }}">
+            <i class="fas fa-comment-alt me-1"></i>Kritik & Saran
+        </a>
+    @else
+        <a href="#" class="nav-link" onclick="showLoginPopup(event)">
+            <i class="fas fa-comment-alt me-1"></i>Kritik & Saran
+        </a>
+    @endauth
+</li>
+                <li class="nav-item position-relative">
+                    <a class="nav-link" href="{{ route('cart.view') }}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="badge bg-danger">{{ session('cart') ? count(session('cart')) : 0 }}</span>
+                    </a>
+                </li>
+
+                @guest
+                    <li class="nav-item ms-3">
+                        <a href="{{ route('login') }}" class="btn btn-outline-primary rounded-pill px-4 me-2">
+                            <i class="fas fa-sign-in-alt me-1"></i>Masuk
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('register') }}" class="btn btn-primary rounded-pill px-4">
+                            <i class="fas fa-user-plus me-1"></i>Daftar
+                        </a>
+                    </li>
+                @else
+                    <li class="nav-item dropdown ms-3">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>{{ Auth::user()->name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                                </a>
+                            </li>
+                        </ul>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                    </li>
+                @endguest
+            </ul>
         </div>
-    </header>
+    </div>
+</header>
+
 
     <!-- Hero Section -->
     <section class="hero">
@@ -352,5 +398,29 @@
             navbar.classList.toggle('scrolled', window.scrollY > 50);
         });
     </script>
+
+    <!-- Modal Login Bootstrap -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Masuk Diperlukan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-3">Silakan masuk terlebih dahulu untuk mengakses fitur Kritik & Saran.</p>
+        <a href="{{ route('login') }}" class="btn btn-primary w-100">Masuk Sekarang</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    function showLoginPopup(event) {
+        event.preventDefault();
+        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+    }
+</script>
+
 </body>
 </html>

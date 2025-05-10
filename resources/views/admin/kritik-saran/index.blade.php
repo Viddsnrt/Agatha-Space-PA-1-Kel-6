@@ -11,6 +11,7 @@
                 <th>Email</th>
                 <th>No HP</th>
                 <th>Jenis</th>
+                <th>Pesan</th> {{-- Kolom baru ditambahkan di sini --}}
                 <th>Gambar</th>
                 <th>Tampilkan di Web?</th>
                 <th>Aksi</th>
@@ -23,6 +24,7 @@
                     <td>{{ $item->email }}</td>
                     <td>{{ $item->no_hp }}</td>
                     <td>{{ ucfirst($item->jenis) }}</td>
+                    <td>{{ $item->pesan }}</td> {{-- Data pesan ditampilkan di sini --}}
                     <td>
                         @if ($item->gambar)
                             <img src="{{ asset('storage/' . $item->gambar) }}" alt="gambar" width="100">
@@ -37,7 +39,7 @@
                     </td>
                     <td>
                     ID: {{ $item->id }} <!-- Debug: pastikan ini muncul -->
-                        <form action="{{ route('admin.kritik-saran.updateTampilkan', $item->id) }}" method="POST">
+                        <form action="{{ route('admin.kritik-saran.updateTampilkan', $item->id) }}" method="POST" class="mt-1">
                             @csrf
                             <button type="submit" class="btn btn-sm btn-warning">
                                 {{ $item->tampilkan ? 'Sembunyikan' : 'Tampilkan' }}

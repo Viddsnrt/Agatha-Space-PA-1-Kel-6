@@ -48,19 +48,22 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 
 // Kritik & Saran (user input)
-Route::get('/kritik-saran', [KritikSaranController::class, 'create'])->name('kritik-saran.create');
-Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kritik-saran.store');
+Route::middleware('auth')->group(function () {
+    Route::get('/kritik-saran/create', [KritikSaranController::class, 'create'])->name('kritik-saran.create');
+    Route::post('/kritik-saran', [KritikSaranController::class, 'store'])->name('kritik-saran.store');
+});
+
 
 // ✅ Kritik & Saran (public list - tampilkan yang disetujui)
 Route::get('/daftar-kritik-saran', [KritikSaranController::class, 'list'])->name('kritik-saran.list');
 
-// Tambah ke keranjang
+// Cart Routes
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
-
-// Lihat keranjang
 Route::get('/cart', [CartController::class, 'view'])->name('cart.view');
-Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
-Route::post('/cart/{id}/remove', [CartController::class, 'remove'])->name('cart.remove');
+
+// Rute untuk AJAX
+Route::post('/cart/update', [CartController::class, 'ajaxUpdate'])->name('cart.ajaxUpdate');
+Route::post('/cart/remove', [CartController::class, 'ajaxRemove'])->name('cart.remove'); // Ini akan memanggil metode ajaxRemove di controller
 
 // Promo & Event
 Route::get('/promo-event', [PromoEventController::class, 'index'])->name('user.promo-event');

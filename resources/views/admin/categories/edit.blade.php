@@ -8,7 +8,7 @@
         @method('PUT')
         <div class="mb-3">
             <label for="name">Nama Kategori</label>
-            <input type="text" name="name" class="form-control" value="{{ $category->name }}" required>
+            <input type="text" name="nama" class="form-control" value="{{ $category->nama }}" required>
         </div>
         <button class="btn btn-primary">Update</button>
         <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Kembali</a>

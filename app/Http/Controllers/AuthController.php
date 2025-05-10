@@ -14,25 +14,24 @@ class AuthController extends Controller
     }
 
     public function authenticate(Request $request)
-{
-    $credentials = $request->only('email', 'password');
+    {
+        $credentials = $request->only('email', 'password');
 
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
 
-        // Cek apakah user adalah admin
-        if (Auth::user()->is_admin) {
-            return redirect()->route('admin.dashboard'); // ke dashboard admin
-        } else {
-            return redirect()->route('home'); // ke halaman home biasa
+            // Cek apakah user adalah admin
+            if (Auth::user()->is_admin) {
+                return redirect()->route('admin.dashboard');
+            } else {
+                return redirect()->route('home');
+            }
         }
+
+        // Kirim error menggunakan flash session
+        return back()->with('error', 'Email atau kata sandi salah. Silakan coba lagi.')
+                     ->withInput(); // agar email tetap terisi saat gagal login
     }
-
-    return back()->withErrors([
-        'email' => 'Email atau password salah!',
-    ]);
-}
-
 
     public function showRegister()
     {

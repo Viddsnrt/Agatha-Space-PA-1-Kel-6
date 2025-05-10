@@ -25,7 +25,8 @@ class MenuController extends Controller
             $query->where('kategori_id', $kategoriId);
         }
 
-        $menus = $query->get();
+        // Ganti get() dengan paginate() agar hasilnya dibagi halaman
+        $menus = $query->paginate(9)->withQueryString(); 
 
         return view('user.menu', compact('menus', 'categories', 'search', 'kategoriId'));
     }

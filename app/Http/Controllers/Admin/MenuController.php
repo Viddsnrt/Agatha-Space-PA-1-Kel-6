@@ -69,7 +69,7 @@ class MenuController extends Controller
             'deskripsi' => 'required',
             'harga' => 'required',
             'kategori_id' => 'required|exists:categories,id',
-            'gambar' => 'nullable|image|max:2048',
+            'gambar' => 'nullable|image',
         ]);
 
         $data = $request->only('nama', 'deskripsi', 'kategori_id');

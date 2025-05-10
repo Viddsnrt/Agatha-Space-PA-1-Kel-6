@@ -8,7 +8,7 @@
                 <p>Agatha Space bukan sekadar tempat menikmati kopi, tapi tempat beristirahat dari hiruk pikuk dunia, di mana waktu melambat dan senja menemani.</p>
                 <div class="social-icons mt-4">
                     <a href="https://wa.me/6281234567890" target="_blank"><i class="fab fa-whatsapp"></i></a>
-                    <a href="https://instagram.com/yourusername" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.instagram.com/agathaspace.balige" target="_blank"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
 
@@ -47,30 +47,41 @@
 <!-- CSS Footer Style -->
 <style>
 .footer-coffee {
-    background: linear-gradient(rgba(58, 29, 0, 0.85), rgba(58, 29, 0, 0.85)),
+    background: linear-gradient(rgba(58, 29, 0, 0.88), rgba(58, 29, 0, 0.88)),
                 url('/path-ke-gambar-background-kamu.jpg') no-repeat center center;
     background-size: cover;
     background-attachment: fixed;
     color: #ffffff;
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
+    padding: 60px 30px 40px;
 }
 
 .footer-coffee .logo-font {
     font-family: 'Playfair Display', serif;
-    font-size: 2.3rem;
+    font-size: 2.5rem;
     font-weight: bold;
     letter-spacing: 1px;
-}
-
-.footer-coffee h5 {
-    font-weight: 600;
-    font-size: 1.2rem;
     margin-bottom: 1rem;
 }
 
+.footer-coffee h5 {
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #ffd699;
+}
+
+.footer-coffee p,
+.footer-coffee li {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
 .footer-coffee ul {
+    list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .footer-coffee ul li {
@@ -89,11 +100,15 @@
     transform: translateX(5px);
 }
 
+.footer-coffee .social-icons {
+    margin-top: 15px;
+}
+
 .footer-coffee .social-icons a {
     color: #ffffff;
     font-size: 1.8rem;
-    margin-right: 15px;
-    transition: transform 0.5s ease, color 0.3s;
+    margin-right: 18px;
+    transition: transform 0.4s ease, color 0.3s;
     display: inline-block;
 }
 
@@ -104,27 +119,25 @@
 }
 
 .footer-coffee .contact-info li {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     display: flex;
-    align-items: center;
+    align-items: start;
 }
 
 .footer-coffee .contact-info i {
     color: #ffd699;
+    margin-right: 8px;
+    font-size: 1.1rem;
 }
 
 .footer-coffee .small-text {
     font-size: 0.85rem;
-    opacity: 0.8;
-    margin-top: 2rem;
+    opacity: 0.85;
+    margin-top: 2.5rem;
 }
 
-/* Responsive */
+/* Responsive tweaks */
 @media (max-width: 768px) {
-    .footer-coffee .logo-font {
-        font-size: 2rem;
-    }
-
     .footer-coffee {
         text-align: center;
     }
@@ -132,7 +145,21 @@
     .footer-coffee .social-icons {
         justify-content: center;
     }
+
+
+    .footer-coffee .contact-info li {
+        justify-content: center;
+    }
+
+    .footer-coffee .logo-font {
+        font-size: 2.2rem;
+    }
+
+    .footer-coffee h5 {
+        margin-top: 2rem;
+    }
 }
+
 </style>
 
 <!-- Font Awesome -->
