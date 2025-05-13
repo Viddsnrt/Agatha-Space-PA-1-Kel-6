@@ -122,6 +122,12 @@ return [
             'route' => 'admin.table.index',
             'icon' => 'fas fa-concierge-bell ',
         ],
+
+        [
+            'text' => 'Pesanan Pelanggan', // Atau 'Manajemen Pesanan'
+            'route' => 'admin.orders.index',
+            'icon' => 'fas fa-shopping-cart', // Atau 'fas fa-receipt'
+        ],
     ],
 
     'filters' => [

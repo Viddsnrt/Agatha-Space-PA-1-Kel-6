@@ -207,7 +207,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+           <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav align-items-center">
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
@@ -235,23 +235,39 @@
                     </a>
                 </li>
                 <li class="nav-item">
-    @auth
-        <a class="nav-link {{ request()->routeIs('kritik-saran.create') ? 'active' : '' }}"
-           href="{{ route('kritik-saran.create') }}">
-            <i class="fas fa-comment-alt me-1"></i>Kritik & Saran
-        </a>
-    @else
-        <a href="#" class="nav-link" onclick="showLoginPopup(event)">
-            <i class="fas fa-comment-alt me-1"></i>Kritik & Saran
-        </a>
-    @endauth
-</li>
+                    @auth
+                        <a class="nav-link {{ request()->routeIs('kritik-saran.create') ? 'active' : '' }}"
+                           href="{{ route('kritik-saran.create') }}">
+                            <i class="fas fa-comment-alt me-1"></i>Kritik & Saran
+                        </a>
+                    @else
+                        <a href="#" class="nav-link" onclick="showLoginPopup(event)">
+                            <i class="fas fa-comment-alt me-1"></i>Kritik & Saran
+                        </a>
+                    @endauth
+                </li>
+
+                {{-- PERUBAHAN DI SINI --}}
+                @auth
                 <li class="nav-item position-relative">
                     <a class="nav-link" href="{{ route('cart.view') }}">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="badge bg-danger">{{ session('cart') ? count(session('cart')) : 0 }}</span>
+                        {{-- Badge bisa tetap, karena jika tidak login, item ini tidak akan dirender --}}
+                        {{-- Dan jika login tapi cart kosong, JS di app.blade.php akan handle badge nya --}}
+                        {{-- atau bisa juga diatur di sini agar badge hanya tampil jika ada isinya --}}
+                        @php
+                            $cartItemCountLanding = Auth::check() && session('cart') ? count(session('cart')) : 0;
+                        @endphp
+                        @if($cartItemCountLanding > 0)
+                        <span class="badge bg-danger position-absolute top-0 start-100 translate-middle" style="font-size: 0.65em; padding: 0.25em 0.4em;">
+                            {{ $cartItemCountLanding }}
+                        </span>
+                        @endif
                     </a>
                 </li>
+                @endauth
+                {{-- AKHIR PERUBAHAN --}}
+
 
                 @guest
                     <li class="nav-item ms-3">
@@ -270,14 +286,19 @@
                             <i class="fas fa-user-circle me-1"></i>{{ Auth::user()->name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            {{-- Tambahkan link ke Dashboard Admin jika user adalah admin --}}
+                            @if(Auth::user()->is_admin)
+                                <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard Admin</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                            @endif
                             <li>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                   onclick="event.preventDefault(); document.getElementById('logout-form-landing').submit();"> {{-- Pastikan ID form unik jika ada form logout lain --}}
                                     <i class="fas fa-sign-out-alt me-1"></i>Logout
                                 </a>
                             </li>
                         </ul>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        <form id="logout-form-landing" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
                     </li>
