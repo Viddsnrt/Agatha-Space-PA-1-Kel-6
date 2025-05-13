@@ -1,54 +1,179 @@
-@extends('admin.layouts.app')
+@extends('admin.layouts.app') {{-- Sesuaikan dengan layout admin Anda, mungkin adminlte.page atau lainnya --}}
+
+@section('title', 'Daftar Kritik & Saran') {{-- Judul Halaman --}}
+
+{{-- Jika Anda menggunakan AdminLTE atau template yang memiliki section untuk judul halaman --}}
+@section('content_header')
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1>Daftar Kritik & Saran</h1>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item active">Kritik & Saran</li>
+            </ol>
+        </div>
+    </div>
+@stop
 
 @section('content')
-<div class="container">
-    <h2 class="mb-4">Daftar Kritik & Saran</h2>
-
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Nama</th>
-                <th>Email</th>
-                <th>No HP</th>
-                <th>Jenis</th>
-                <th>Pesan</th> {{-- Kolom baru ditambahkan di sini --}}
-                <th>Gambar</th>
-                <th>Tampilkan di Web?</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach ($kritiksarans as $item)
-                <tr>
-                    <td>{{ $item->nama }}</td>
-                    <td>{{ $item->email }}</td>
-                    <td>{{ $item->no_hp }}</td>
-                    <td>{{ ucfirst($item->jenis) }}</td>
-                    <td>{{ $item->pesan }}</td> {{-- Data pesan ditampilkan di sini --}}
-                    <td>
-                        @if ($item->gambar)
-                            <img src="{{ asset('storage/' . $item->gambar) }}" alt="gambar" width="100">
-                        @else
-                            -
-                        @endif
-                    </td>
-                    <td>
-                        <span class="badge bg-{{ $item->tampilkan ? 'success' : 'secondary' }}">
-                            {{ $item->tampilkan ? 'Ya' : 'Tidak' }}
-                        </span>
-                    </td>
-                    <td>
-                    ID: {{ $item->id }} <!-- Debug: pastikan ini muncul -->
-                        <form action="{{ route('admin.kritik-saran.updateTampilkan', $item->id) }}" method="POST" class="mt-1">
-                            @csrf
-                            <button type="submit" class="btn btn-sm btn-warning">
-                                {{ $item->tampilkan ? 'Sembunyikan' : 'Tampilkan' }}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Data Kritik & Saran Pengguna</h3>
+                    <div class="card-tools">
+                        <a href="{{ route('admin.kritik-saran.export.pdf') }}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-file-pdf"></i> Download PDF
+                        </a>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
                             </button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    <div class="table-responsive">
+                        <table id="kritikSaranTable" class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>No HP</th>
+                                    <th>Jenis</th>
+                                    <th>Pesan</th>
+                                    <th>Gambar</th>
+                                    <th>Tampilkan di Web?</th>
+                                    <th>Tanggal Kirim</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @forelse ($kritiksarans as $index => $item)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $item->nama }}</td>
+                                    <td>{{ $item->email }}</td>
+                                    <td>{{ $item->no_hp ?? '-' }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ $item->jenis == 'kritik' ? 'danger' : 'success' }}">
+                                            {{ ucfirst($item->jenis) }}
+                                        </span>
+                                    </td>
+                                    <td>{{ Str::limit($item->pesan, 70) }}</td> {{-- Batasi panjang pesan agar tabel rapi --}}
+                                    <td>
+                                        @if ($item->gambar)
+                                            <a href="{{ asset('storage/' . $item->gambar) }}" target="_blank" data-toggle="tooltip" title="Lihat Gambar">
+                                                <img src="{{ asset('storage/' . $item->gambar) }}" alt="gambar" width="60" class="img-thumbnail">
+                                            </a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ $item->tampilkan ? 'primary' : 'secondary' }}">
+                                            {{ $item->tampilkan ? 'Ya' : 'Tidak' }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $item->created_at ? $item->created_at->format('d M Y, H:i') : '-' }}</td>
+                                    <td>
+                                        <form action="{{ route('admin.kritik-saran.updateTampilkan', $item->id) }}" method="POST" class="d-inline-block" onsubmit="return confirm('Anda yakin ingin mengubah status tampilkan untuk item ini?');">
+                                            @csrf
+                                            <button type="submit" class="btn btn-xs {{ $item->tampilkan ? 'btn-warning' : 'btn-info' }}" data-toggle="tooltip" title="{{ $item->tampilkan ? 'Sembunyikan' : 'Tampilkan' }} di Web">
+                                                <i class="fas fa-eye{{ $item->tampilkan ? '-slash' : '' }}"></i>
+                                                {{-- {{ $item->tampilkan ? 'Sembunyikan' : 'Tampilkan' }} --}}
+                                            </button>
+                                        </form>
+                                        {{-- Tambahkan tombol hapus jika diperlukan --}}
+                                        {{--
+                                        <form action="{{ route('admin.kritik-saran.destroy', $item->id) }}" method="POST" class="d-inline-block" onsubmit="return confirm('Anda yakin ingin menghapus item ini? Ini tidak dapat dikembalikan.');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Hapus">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                        --}}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="10" class="text-center">Tidak ada data kritik & saran.</td>
+                                </tr>
+                            @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                {{-- Jika Anda menggunakan paginasi di controller, tampilkan link paginasi --}}
+                {{-- <div class="card-footer clearfix">
+                    {{ $kritiksarans->links() }}
+                </div> --}}
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</div><!-- /.container-fluid -->
 @endsection
+
+@push('styles')
+    {{-- Jika Anda menggunakan DataTables atau CSS tambahan --}}
+    {{-- <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}"> --}}
+    {{-- <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}"> --}}
+    <style>
+        .img-thumbnail {
+            object-fit: cover;
+            height: 40px; /* Sesuaikan tinggi thumbnail gambar */
+        }
+    </style>
+@endpush
+
+@push('scripts')
+    {{-- Jika Anda menggunakan DataTables atau JS tambahan --}}
+    {{-- <script src="{{ asset('vendor/adminlte/plugins/datatables/jquery.dataTables.min.js') }}"></script> --}}
+    {{-- <script src="{{ asset('vendor/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script> --}}
+    {{-- <script src="{{ asset('vendor/adminlte/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script> --}}
+    {{-- <script src="{{ asset('vendor/adminlte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script> --}}
+    <script>
+        $(function () {
+            // Inisialisasi DataTables jika digunakan
+            // $("#kritikSaranTable").DataTable({
+            //     "responsive": true,
+            //     "lengthChange": false,
+            //     "autoWidth": false,
+            //     // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"] // Jika ingin tombol bawaan DataTables
+            // }).buttons().container().appendTo('#kritikSaranTable_wrapper .col-md-6:eq(0)');
+
+            // Inisialisasi Tooltip Bootstrap
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Menghilangkan alert setelah beberapa detik
+            window.setTimeout(function() {
+                $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                    $(this).remove();
+                });
+            }, 4000); // 4 detik
+        });
+    </script>
+@endpush

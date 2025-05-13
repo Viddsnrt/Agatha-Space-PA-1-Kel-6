@@ -2,341 +2,375 @@
 
 @section('title', 'Keranjang')
 
+@push('styles')
+{{-- Tambahkan style jika perlu --}}
+<style>
+    .cart-item {
+        transition: opacity 0.3s ease-out;
+    }
+    .rounded-4 { /* Bootstrap 5.2+ */
+        border-radius: .75rem !important; /* Sesuaikan jika perlu */
+    }
+     .card-img-top {
+        border-top-left-radius: calc(.75rem - 1px); /* Sesuaikan jika perlu */
+        border-top-right-radius: calc(.75rem - 1px); /* Sesuaikan jika perlu */
+    }
+    .quantity-controls button {
+        min-width: 30px; /* Agar tombol +/- tidak terlalu kecil */
+    }
+</style>
+@endpush
+
 @section('content')
 
 @php
     $cart = session('cart', []);
     $waNumber = '6282277124955'; // Nomor WA kamu
     $initialTotalHarga = 0;
-    $initialText = "Halo, saya mau order:%0A";
+    // Hitung total awal di PHP untuk tampilan awal
     foreach ($cart as $id => $item) {
         $initialTotalHarga += $item['harga'] * $item['quantity'];
-        $initialText .= "- {$item['nama']} ({$item['quantity']}x) = Rp " . number_format($item['harga'] * $item['quantity'], 0, ',', '.') . "%0A";
     }
-    $initialText .= "%0A*Total: Rp " . number_format($initialTotalHarga, 0, ',', '.') . "*";
 @endphp
 
-<div class="container mt-5">
-    <h2 class="mb-4 text-center">🛒 Keranjang Anda</h2>
+<div class="container my-5"> {{-- Beri margin atas bawah --}}
+    <h2 class="mb-4 text-center playfair-font">🛒 Keranjang Belanja Anda</h2>
 
-    @if(count($cart) > 0)
-        <div class="row" id="cart-items-container"> {{-- Tambahkan ID di sini --}}
-            @foreach ($cart as $id => $item)
-                <div class="col-md-4 mb-4 cart-item"
-                    data-id="{{ $id }}"
-                    data-harga="{{ $item['harga'] }}"
-                    data-nama="{{ $item['nama'] }}">
-                    <div class="card h-100 shadow-sm rounded-4">
-                        <img src="{{ asset('storage/' . $item['gambar']) }}" class="card-img-top" style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $item['nama'] }}</h5>
-                            <p class="card-text fw-bold">Rp <span class="item-price-display">{{ number_format($item['harga'], 0, ',', '.') }}</span></p>
-                            <p class="card-text">Subtotal: Rp <span class="item-subtotal">{{ number_format($item['harga'] * $item['quantity'], 0, ',', '.') }}</span></p> {{-- Tambahkan subtotal item --}}
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm btn-minus" data-id="{{ $id }}">-</button>
-                                    <span class="mx-2 quantity">{{ $item['quantity'] }}</span>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm btn-plus" data-id="{{ $id }}">+</button>
+    <div id="cart-content"> {{-- Wrapper untuk konten cart --}}
+        @if(count($cart) > 0)
+            <div class="row g-4" id="cart-items-container"> {{-- Beri gap antar kolom & ID --}}
+                @foreach ($cart as $id => $item)
+                    {{-- Pastikan $id adalah string atau integer yang valid untuk atribut HTML --}}
+                    @php $itemId = e($id); @endphp
+                    <div class="col-lg-4 col-md-6 mb-4 cart-item"
+                        data-id="{{ $itemId }}"
+                        data-harga="{{ $item['harga'] }}"
+                        data-nama="{{ e($item['nama']) }}">
+                        <div class="card h-100 shadow-sm rounded-4 border-0">
+                            @if(isset($item['gambar']) && $item['gambar'])
+                            <img src="{{ asset('storage/' . $item['gambar']) }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ e($item['nama']) }}">
+                            @else
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-image fa-3x text-muted"></i> {{-- Placeholder jika gambar tidak ada --}}
+                            </div>
+                            @endif
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title fw-semibold">{{ e($item['nama']) }}</h5>
+                                <p class="card-text text-primary-agatha fw-bold mb-1">
+                                    Rp <span class="item-price-display">{{ number_format($item['harga'], 0, ',', '.') }}</span> / pcs
+                                </p>
+                                <p class="card-text mb-3">
+                                    Subtotal: <strong class="text-success">Rp <span class="item-subtotal">{{ number_format($item['harga'] * $item['quantity'], 0, ',', '.') }}</span></strong>
+                                </p>
+                                <div class="mt-auto d-flex justify-content-between align-items-center quantity-controls">
+                                    <div>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm btn-minus" data-id="{{ $itemId }}">-</button>
+                                        <span class="mx-2 quantity fw-bold" style="min-width: 20px; display: inline-block; text-align: center;">{{ $item['quantity'] }}</span>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm btn-plus" data-id="{{ $itemId }}">+</button>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-danger btn-remove" data-id="{{ $itemId }}" title="Hapus item">
+                                        <i class="fas fa-trash-alt"></i> {{-- Ikon trash yang lebih umum --}}
+                                    </button>
                                 </div>
-                                <button type="button" class="btn btn-danger btn-sm btn-remove" data-id="{{ $id }}">
-                                    <i class="fas fa-trash"></i>
-                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
 
-        <div class="text-center mt-4">
-            <h4 class="fw-bold">Total Keseluruhan: Rp <span id="cart-total-display">{{ number_format($initialTotalHarga, 0, ',', '.') }}</span></h4>
-        </div>
+            <div class="text-center mt-4 pt-3 border-top" id="cart-summary">
+                <h4 class="fw-bold mb-3">Total Keseluruhan: <span class="text-success">Rp <span id="cart-total-display">{{ number_format($initialTotalHarga, 0, ',', '.') }}</span></span></h4>
+                 {{-- Link WA akan di-generate oleh JS --}}
+                <a href="#" target="_blank" id="checkoutBtn" class="btn btn-success btn-lg rounded-pill px-5 shadow-sm">
+                    <i class="fab fa-whatsapp me-2"></i>Lanjut Checkout via WhatsApp
+                </a>
+            </div>
 
-        <div class="text-center mt-3 mb-5">
-            <a href="https://wa.me/{{ $waNumber }}?text={{ $initialText }}" target="_blank" id="checkoutBtn" class="btn btn-success btn-lg rounded-pill px-5">
-                Lanjut Checkout via WhatsApp
-            </a>
-        </div>
-    @else
-        <div class="alert alert-info text-center" id="empty-cart-message">
-            Keranjang Anda kosong.
-        </div>
-         {{-- Sembunyikan tombol checkout jika keranjang kosong --}}
-        <div class="text-center mt-5 d-none" id="checkout-button-container">
-             <h4 class="fw-bold">Total Keseluruhan: Rp <span id="cart-total-display-hidden">0</span></h4>
-            <a href="#" target="_blank" id="checkoutBtn-hidden" class="btn btn-success btn-lg rounded-pill px-5">
-                Lanjut Checkout via WhatsApp
-            </a>
-        </div>
-    @endif
+        @else
+            {{-- Pesan Keranjang Kosong --}}
+            <div class="alert alert-info text-center shadow-sm" id="empty-cart-message">
+                <i class="fas fa-info-circle me-2"></i>Keranjang Anda kosong. Yuk, mulai pesan makanan dan minumannya yaa!
+            </div>
+        @endif
+
+         {{-- Placeholder untuk pesan kosong (jika dikosongkan via JS) --}}
+         <div id="empty-cart-placeholder" class="d-none">
+             <div class="alert alert-info text-center shadow-sm">
+                 <i class="fas fa-info-circle me-2"></i>Keranjang Anda kosong. Yuk, mulai belanja!
+             </div>
+         </div>
+
+         {{-- Kontainer checkout dan total (untuk disembunyikan jika kosong via JS) --}}
+         <div id="cart-summary-placeholder" class="text-center mt-4 pt-3 border-top">
+             {{-- Konten akan diisi oleh JS jika perlu --}}
+         </div>
+
+
+    </div> {{-- End #cart-content --}}
 </div>
 @endsection
 
-@section('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@push('scripts')
+{{-- Pastikan jQuery sudah di-load di layout utama atau di sini --}}
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-{{-- Pastikan Font Awesome sudah ter-link jika menggunakan ikon trash --}}
-{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" /> --}}
+{{-- Pastikan Font Awesome sudah ter-link di layout utama atau di sini --}}
+{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" /> --}}
 
-
+{{-- CSRF Token Setup --}}
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <script>
     $(document).ready(function () {
+        // Setup CSRF token untuk semua request AJAX
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
-        const waNumber = '{{ $waNumber }}';
+        const waNumber = '{{ $waNumber }}'; // Ambil nomor WA dari PHP
 
-        // Fungsi untuk update link WhatsApp dan total harga
-        function updateCartDetails() {
-            let message = "Halo, saya mau order:%0A";
+        // --- Fungsi Utama untuk Update Tampilan Keranjang ---
+        function updateCartView() {
+            let message = "Halo Agatha Space, saya mau order:%0A%0A"; // Tambah baris kosong
             let grandTotal = 0;
             let itemCount = 0;
+            const itemsContainer = $('#cart-items-container');
+            const cartSummary = $('#cart-summary');
+            const emptyCartMessage = $('#empty-cart-message'); // Pesan yg ada dari PHP
+            const emptyCartPlaceholder = $('#empty-cart-placeholder').children().clone(); // Clone elemen pesan kosong
+            const checkoutBtn = $('#checkoutBtn');
+            const totalDisplay = $('#cart-total-display');
 
+            // Iterasi setiap item yang ADA di DOM
             $('.cart-item').each(function () {
+                itemCount++;
                 const itemCard = $(this);
                 const nama = itemCard.data('nama');
                 const harga = parseInt(itemCard.data('harga'));
+                // Ambil quantity terbaru dari elemen span .quantity
                 const qty = parseInt(itemCard.find('.quantity').text());
+                const subtotal = qty * harga;
 
-                if (qty > 0) {
-                    const subtotal = qty * harga;
-                    message += `- ${nama} (${qty}x) = Rp ${subtotal.toLocaleString('id-ID')}%0A`;
-                    grandTotal += subtotal;
-                    itemCard.find('.item-subtotal').text(subtotal.toLocaleString('id-ID')); // Update subtotal per item
-                    itemCount++;
-                }
+                // Update tampilan subtotal per item
+                itemCard.find('.item-subtotal').text(subtotal.toLocaleString('id-ID'));
+
+                // Tambahkan ke total keseluruhan
+                grandTotal += subtotal;
+
+                // Tambahkan ke pesan WhatsApp
+                message += `- ${nama} (${qty}x) -> Rp ${subtotal.toLocaleString('id-ID')}%0A`;
             });
 
-            message += `%0A*Total: Rp ${grandTotal.toLocaleString('id-ID')}*`;
+            // Update tampilan total keseluruhan
+            totalDisplay.text(grandTotal.toLocaleString('id-ID'));
 
-            $('#checkoutBtn').attr('href', `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`);
-            $('#cart-total-display').text(grandTotal.toLocaleString('id-ID'));
+            // Buat pesan akhir WhatsApp
+            message += `%0A----------------------------%0A`; // Pemisah
+            message += `*Total Pesanan: Rp ${grandTotal.toLocaleString('id-ID')}*%0A%0A`;
+            message += `Mohon info selanjutnya. Terima kasih!`;
 
-            // Tampilkan atau sembunyikan pesan keranjang kosong & tombol checkout
+            // Update link tombol WhatsApp
+            checkoutBtn.attr('href', `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`);
+
+
+            // Logika Tampilkan/Sembunyikan elemen berdasarkan jumlah item
             if (itemCount === 0) {
-                if ($('#empty-cart-message').length === 0) {
-                    // Jika belum ada pesan kosong, tambahkan
-                     $('#cart-items-container').html(''); // Kosongkan item
-                     $('#cart-items-container').parent().append('<div class="alert alert-info text-center" id="empty-cart-message">Keranjang Anda kosong.</div>');
+                 // Jika kontainer item sudah kosong tapi belum ada pesan, tampilkan pesan
+                if (itemsContainer.children().length === 0 && $('#cart-content').find('#empty-cart-message').length === 0) {
+                    itemsContainer.hide(); // Sembunyikan row jika kosong
+                    cartSummary.hide(); // Sembunyikan summary
+                    // Masukkan pesan kosong dari placeholder
+                    $('#cart-content').append(emptyCartPlaceholder.attr('id', 'empty-cart-message')); // Beri ID lagi
+                    $('#empty-cart-message').show();
+                } else if (itemCount === 0) {
+                    // Jika memang sudah kosong dari awal atau baru dikosongkan
+                     itemsContainer.hide();
+                     cartSummary.hide();
+                     emptyCartMessage.show(); // Tampilkan pesan yg mungkin sudah ada
                 }
-                $('#empty-cart-message').show();
-                $('#checkoutBtn').parent().addClass('d-none'); // Sembunyikan container tombol checkout utama
-                $('#cart-total-display').parent().addClass('d-none'); // Sembunyikan container total utama
 
-                // Jika kamu ingin benar-benar reload untuk menunjukkan state kosong dari PHP
-                // window.location.reload();
             } else {
-                $('#empty-cart-message').hide();
-                $('#checkoutBtn').parent().removeClass('d-none');
-                $('#cart-total-display').parent().removeClass('d-none');
+                // Jika ada item
+                emptyCartMessage.hide(); // Sembunyikan pesan kosong
+                 itemsContainer.show(); // Tampilkan row item
+                cartSummary.show(); // Tampilkan summary
             }
         }
 
+        // --- Event Handlers ---
 
-         // Tombol tambah quantity
+        // Tombol Tambah (+)
         $(document).on('click', '.btn-plus', function (e) {
             e.preventDefault();
-            console.log('Tombol Plus diklik!'); // <--- TAMBAHKAN INI
             const id = $(this).data('id');
-            console.log('ID Item Plus:', id); // <--- TAMBAHKAN INI
-            if (id === undefined) {
-                console.error('ID tidak ditemukan untuk tombol Plus. Cek data-id pada HTML.');
-                return;
-            }
-            updateQuantity(id, 'increase');
+            if (id === undefined) return; // Hindari error jika id tidak ada
+            sendUpdateRequest(id, 'increase');
         });
 
-        // Tombol kurang quantity
+        // Tombol Kurang (-)
         $(document).on('click', '.btn-minus', function (e) {
             e.preventDefault();
-            console.log('Tombol Minus diklik!'); // <--- TAMBAHKAN INI
             const id = $(this).data('id');
-            console.log('ID Item Minus:', id); // <--- TAMBAHKAN INI
-            if (id === undefined) {
-                console.error('ID tidak ditemukan untuk tombol Minus. Cek data-id pada HTML.');
-                return;
-            }
+            if (id === undefined) return; // Hindari error
             const currentQty = parseInt($(`.cart-item[data-id="${id}"]`).find('.quantity').text());
+
+            // Hanya kirim request jika quantity > 0 (Controller akan handle jika jadi 0)
             if (currentQty > 0) {
-                 updateQuantity(id, 'decrease');
-            } else {
-                console.log('Kuantitas sudah 0, tidak mengurangi lagi.');
+                 sendUpdateRequest(id, 'decrease');
             }
         });
 
-        // Tombol hapus item
+        // Tombol Hapus Item (Trash Icon)
         $(document).on('click', '.btn-remove', function (e) {
             e.preventDefault();
-            console.log('Tombol Hapus diklik!'); // <--- TAMBAHKAN INI
             const id = $(this).data('id');
-            console.log('ID Item Hapus:', id); // <--- TAMBAHKAN INI
-            if (id === undefined) {
-                console.error('ID tidak ditemukan untuk tombol Hapus. Cek data-id pada HTML.');
-                return;
-            }
+            if (id === undefined) return; // Hindari error
+
+            const itemCard = $(`.cart-item[data-id="${id}"]`);
+            const itemName = itemCard.data('nama'); // Ambil nama untuk konfirmasi
 
             Swal.fire({
-                title: 'Hapus item?',
-                text: "Anda yakin ingin menghapus item ini dari keranjang?",
+                title: `Hapus ${itemName}?`,
+                text: "Item ini akan dihapus dari keranjang Anda.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, hapus!',
+                confirmButtonText: 'Ya, Hapus!',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    removeItem(id);
+                    sendRemoveRequest(id, itemCard); // Kirim request hapus
                 }
             });
         });
 
+        // --- Fungsi AJAX ---
 
-        // Fungsi untuk update quantity
-        function updateQuantity(id, type) {
+        // Fungsi untuk mengirim request update quantity (+/-)
+        function sendUpdateRequest(id, type) {
             const itemCard = $(`.cart-item[data-id="${id}"]`);
             const quantityElement = itemCard.find('.quantity');
-            let currentQty = parseInt(quantityElement.text());
-            let newQty = currentQty;
+            const currentQty = parseInt(quantityElement.text());
 
-            if (type === 'increase') {
-                newQty = currentQty + 1;
-            } else if (type === 'decrease') {
-                newQty = currentQty - 1;
-            }
-
-            // Optimistic UI update
-            if (newQty > 0) {
-                quantityElement.text(newQty);
-            } else {
-                 // Jika qty jadi 0 karena pengurangan, kita akan hapus item via AJAX
-                 // Tidak perlu update UI quantityElement di sini, biarkan removeItem yang handle
-            }
-            updateCartDetails(); // Update total dan link WA segera
-
+            // Tampilkan loading sederhana (opsional)
+            quantityElement.html('<i class="fas fa-spinner fa-spin fa-xs"></i>');
 
             $.ajax({
-                url: "{{ route('cart.ajaxUpdate') }}", // Pastikan nama rute ini benar
+                url: "{{ route('cart.ajaxUpdate') }}",
                 type: "POST",
-                data: {
-                    id: id,
-                    type: type,
-                    // _token: '{{ csrf_token() }}' // Tidak perlu jika sudah di $.ajaxSetup
-                },
+                data: { id: id, type: type },
                 success: function(response) {
                     if (response.success) {
-                        if (response.qty === 0) { // Item dihapus karena quantity jadi 0
-                            itemCard.fadeOut(300, function() {
+                        if (response.qty === 0) {
+                            // Item dihapus karena quantity 0
+                            itemCard.css('opacity', '0.5'); // Efek visual sebelum hilang
+                            itemCard.slideUp(300, function() {
                                 $(this).remove();
-                                updateCartDetails(); // Panggil lagi untuk memastikan
-                                if ($('.cart-item').length === 0 && $('#empty-cart-message').length === 0) {
-                                    // Jika ini item terakhir, tampilkan pesan kosong
-                                    $('#cart-items-container').html(''); // Kosongkan item
-                                    $('#cart-items-container').parent().append('<div class="alert alert-info text-center" id="empty-cart-message">Keranjang Anda kosong.</div>');
-                                    $('#checkoutBtn').parent().addClass('d-none');
-                                    $('#cart-total-display').parent().addClass('d-none');
+                                updateCartView(); // Update tampilan setelah item hilang
+                                showToast('success', response.message || 'Item dihapus');
+                                // Cek apakah keranjang jadi kosong total
+                                if ($('.cart-item').length === 0) {
+                                     updateCartView(); // Panggil lagi untuk memastikan pesan kosong muncul
                                 }
                             });
                         } else {
-                            // Update quantity dari server jika ada perbedaan (meski seharusnya sama dengan optimistic update)
+                            // Update quantity berhasil
                             quantityElement.text(response.qty);
-                            updateCartDetails();
+                            updateCartView(); // Update subtotal, total, dan link WA
+                            // showToast('success', response.message || 'Kuantitas diperbarui');
                         }
-                        // Opsional: Tampilkan notifikasi sukses singkat
-                        // Swal.fire('Berhasil', 'Kuantitas diperbarui', 'success');
                     } else {
-                        // Rollback UI jika gagal
+                        // Kembalikan quantity jika gagal di server
                         quantityElement.text(currentQty);
-                        updateCartDetails();
-                        Swal.fire('Error', response.message || 'Gagal memperbarui keranjang', 'error');
+                        showToast('error', response.message || 'Gagal memperbarui');
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    // Rollback UI jika error koneksi
+                    // Kembalikan quantity jika error koneksi
                     quantityElement.text(currentQty);
-                    updateCartDetails();
-                    Swal.fire('Error', 'Terjadi kesalahan: ' + textStatus + ' (' + errorThrown + ')', 'error');
+                    showToast('error', 'Terjadi kesalahan jaringan.');
+                    console.error("AJAX Error:", textStatus, errorThrown);
                 }
             });
         }
 
-        // Fungsi untuk hapus item
-        function removeItem(id) {
-            const itemCard = $(`.cart-item[data-id="${id}"]`);
+        // Fungsi untuk mengirim request hapus item
+        function sendRemoveRequest(id, itemCard) {
+            // Tampilkan loading (opsional)
+             itemCard.css('opacity', '0.5');
 
             $.ajax({
-                url: "{{ route('cart.remove') }}", // Pastikan nama rute ini benar
+                url: "{{ route('cart.remove') }}",
                 type: "POST",
-                data: {
-                    id: id,
-                    // _token: '{{ csrf_token() }}' // Tidak perlu jika sudah di $.ajaxSetup
-                },
+                data: { id: id },
                 success: function(response) {
                     if (response.success) {
-                        itemCard.fadeOut(300, function() {
+                         itemCard.slideUp(300, function() {
                             $(this).remove();
-                            updateCartDetails();
-                            if ($('.cart-item').length === 0 && $('#empty-cart-message').length === 0) {
-                                // Jika ini item terakhir, tampilkan pesan kosong
-                                $('#cart-items-container').html(''); // Kosongkan item
-                                $('#cart-items-container').parent().append('<div class="alert alert-info text-center" id="empty-cart-message">Keranjang Anda kosong.</div>');
-                                $('#checkoutBtn').parent().addClass('d-none');
-                                $('#cart-total-display').parent().addClass('d-none');
+                            updateCartView(); // Update tampilan setelah item hilang
+                             showToast('success', response.message || 'Item berhasil dihapus');
+                            // Cek apakah keranjang jadi kosong total
+                            if ($('.cart-item').length === 0) {
+                                updateCartView(); // Panggil lagi untuk memastikan pesan kosong muncul
                             }
                         });
-                        Swal.fire('Dihapus!', 'Item telah dihapus dari keranjang.', 'success');
                     } else {
-                        Swal.fire('Error', response.message || 'Gagal menghapus item', 'error');
+                        itemCard.css('opacity', '1'); // Kembalikan opacity jika gagal
+                        showToast('error', response.message || 'Gagal menghapus item');
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    Swal.fire('Error', 'Terjadi kesalahan: ' + textStatus + ' (' + errorThrown + ')', 'error');
+                    itemCard.css('opacity', '1'); // Kembalikan opacity jika error koneksi
+                    showToast('error', 'Terjadi kesalahan jaringan.');
+                    console.error("AJAX Error:", textStatus, errorThrown);
                 }
             });
         }
 
-        // Panggil updateCartDetails saat halaman pertama kali dimuat jika ada item
-        if ($('.cart-item').length > 0) {
-            updateCartDetails();
-        } else {
-            // Jika awalnya sudah kosong, pastikan tombol checkout utama disembunyikan
-            $('#checkoutBtn').parent().addClass('d-none');
-            $('#cart-total-display').parent().addClass('d-none');
+        // Fungsi helper untuk menampilkan notifikasi (Toast)
+        function showToast(icon, title) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            Toast.fire({
+                icon: icon, // 'success', 'error', 'warning', 'info', 'question'
+                title: title
+            });
         }
 
-    });
+
+        // --- Panggilan Awal ---
+        updateCartView(); // Panggil saat halaman dimuat untuk generate link WA awal dan memastikan tampilan benar
+
+    }); // Akhir $(document).ready
 </script>
 
+{{-- Script untuk menampilkan pesan session flash (jika masih digunakan dari operasi lain) --}}
 @if(session('success'))
 <script>
-    $(document).ready(function() { // Pastikan DOM siap
-        Swal.fire({
-            icon: 'success',
-            title: 'Sukses!',
-            text: '{{ session('success') }}',
-            timer: 2000,
-            showConfirmButton: false
-        });
+    $(document).ready(function() {
+        showToast('success', '{{ session('success') }}'); // Gunakan fungsi showToast
     });
 </script>
 @endif
 
 @if(session('error'))
 <script>
-     $(document).ready(function() { // Pastikan DOM siap
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops!',
-            text: '{{ session('error') }}',
-            timer: 2000,
-            showConfirmButton: false
-        });
+     $(document).ready(function() {
+        showToast('error', '{{ session('error') }}'); // Gunakan fungsi showToast
     });
 </script>
 @endif
-@endsection
+@endpush

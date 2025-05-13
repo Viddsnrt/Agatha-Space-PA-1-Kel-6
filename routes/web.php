@@ -81,9 +81,13 @@ Route::get('/reservasi', [\App\Http\Controllers\Auth\TablePublicController::clas
 // ========================
 // 🔐 Admin Area (Protected)
 // ========================
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () { // TAMBAHKAN 'is_admin' DI SINI
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+
+     // Route untuk Manajemen Pengguna
+    Route::resource('users', App\Http\Controllers\Admin\UserController::class)->except(['show']); // Kita tidak butuh show untuk saat ini
 
     // Menu 
     Route::resource('menus', AdminMenuController::class);
@@ -94,9 +98,14 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Galeri
     Route::resource('gallery', AdminGalleryController::class);
 
-    // Kritik & Saran 
+        // Kritik & Saran
     Route::get('/kritik-saran', [AdminKritikSaranController::class, 'index'])->name('kritik-saran.index');
     Route::post('/kritik-saran/{id}/update-tampilkan', [AdminKritikSaranController::class, 'updateTampilkan'])->name('kritik-saran.updateTampilkan');
+
+    // Rute baru untuk export
+
+    Route::get('/kritik-saran/export/pdf', [AdminKritikSaranController::class, 'exportPdf'])->name('kritik-saran.export.pdf');
+
 
     // Promo & Event
     Route::resource('promo-event', \App\Http\Controllers\Admin\PromoEventController::class);

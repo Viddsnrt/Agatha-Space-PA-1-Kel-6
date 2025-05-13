@@ -29,4 +29,10 @@
     <x-adminlte-info-box title="Reservasi Meja" text="{{ $totalTable }}" icon="fas fa-concierge-bell" theme="olive" url="/admin/table" url-text="Lihat Semua"/>
 </div>
 
+    <div class="col-md-3">
+            <x-adminlte-info-box title="Pengguna" text="{{ $totalUsers }}" icon="fas fa-users" theme="blue" url="{{ route('admin.users.index') }}" url-text="Kelola Pengguna"/>
+        </div>
+    </div>
 @endsection
+
+

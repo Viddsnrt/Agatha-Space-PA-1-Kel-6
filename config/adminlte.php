@@ -81,11 +81,19 @@ return [
 
     'menu' => [
         ['header' => 'AGATHA SPACE'],
+
+        [
+            'text'    => 'Pengguna',
+            'url'     => 'admin/users', // Ini akan mengarah ke route('admin.users.index')
+            'icon'    => 'fas fa-fw fa-users',
+            // 'can'  => 'manage-users', // Nanti bisa pakai permission
+        ],
         [
             'text' => 'Kategori',
             'route' => 'admin.categories.index',
             'icon' => 'fas fa-tags',
         ],
+        
         [
             'text' => 'Menu',
             'route' => 'admin.menus.index',
