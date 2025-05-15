@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Menu;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str; // Jika belum ada, tambahkan untuk Str::limit jika masih digunakan di index
 
 class MenuController extends Controller
 {
@@ -14,29 +15,26 @@ class MenuController extends Controller
     {
         $query = Menu::with('category')->latest();
 
-        // Filter berdasarkan kategori
-        if ($request->filled('kategori_id')) { // Lebih baik menggunakan filled() untuk mengecek apakah ada isinya
+        if ($request->filled('kategori_id')) {
             $query->where('kategori_id', $request->kategori_id);
         }
 
-        // Filter berdasarkan pencarian (nama atau deskripsi)
         if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('nama', 'like', '%' . $searchTerm . '%')
                   ->orWhere('deskripsi', 'like', '%' . $searchTerm . '%');
-                // Jika ingin mencari berdasarkan nama kategori juga (opsional):
-                // ->orWhereHas('category', function ($catQuery) use ($searchTerm) {
-                //     $catQuery->where('nama', 'like', '%' . $searchTerm . '%');
-                // });
             });
         }
 
-        // Menggunakan paginate untuk mendapatkan hasil paginasi
-        $menus = $query->get(); // Ganti 10 dengan jumlah item per halaman yang Anda inginkan
+        // Jika Anda MENGHAPUS pagination dari index.blade.php, maka get() sudah benar.
+        // Jika Anda INGIN pagination, gunakan ->paginate(10) atau jumlah yang diinginkan.
+        $menus = $query->get(); // atau $query->paginate(10);
 
-        $categories = Category::orderBy('nama')->get(); // Lebih baik diurutkan agar tampilan dropdown rapi
+        $categories = Category::orderBy('nama')->get();
 
+        // Kirim juga request ke view agar filter tetap aktif di link pagination jika menggunakan paginate()
+        // return view('admin.menu.index', compact('menus', 'categories', 'request'));
         return view('admin.menu.index', compact('menus', 'categories'));
     }
 
@@ -49,19 +47,17 @@ class MenuController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255',
+            'nama' => 'required|string|max:255|unique:menus,nama', // Tambah unique jika nama menu harus unik
             'deskripsi' => 'required|string',
-            'harga' => 'required|string', // Validasi sebagai string dulu karena ada "Rp"
-            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Tambahkan batasan tipe dan ukuran file
+            'harga' => 'required|string',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'kategori_id' => 'required|exists:categories,id'
         ]);
 
-        // Bersihkan harga (hapus "Rp", titik, spasi)
         $hargaClean = preg_replace('/[^\d]/', '', $request->harga);
         if (!is_numeric($hargaClean) || $hargaClean < 0) {
-             return back()->withInput()->withErrors(['harga' => 'Format harga tidak valid atau harga negatif.']);
+             return back()->withInput()->withErrors(['harga' => 'Format harga tidak valid atau harga negatif. Pastikan hanya angka yang dimasukkan.']);
         }
-
 
         $gambarPath = $request->file('gambar')->store('menus', 'public');
 
@@ -76,38 +72,34 @@ class MenuController extends Controller
         return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil ditambahkan.');
     }
 
-    public function edit(Menu $menu)
+    public function edit(Menu $menu) // Route Model Binding
     {
         $categories = Category::orderBy('nama')->get();
         return view('admin.menu.edit', compact('menu', 'categories'));
     }
 
-    public function update(Request $request, Menu $menu)
+    public function update(Request $request, Menu $menu) // Route Model Binding
     {
         $request->validate([
-            'nama' => 'required|string|max:255',
+            'nama' => 'required|string|max:255|unique:menus,nama,' . $menu->id, // Unique kecuali untuk ID saat ini
             'deskripsi' => 'required|string',
-            'harga' => 'required|string', // Validasi sebagai string dulu
+            'harga' => 'required|string',
             'kategori_id' => 'required|exists:categories,id',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Tambahkan batasan tipe dan ukuran file
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
         $data = $request->only('nama', 'deskripsi', 'kategori_id');
 
-        // Bersihkan harga (hapus "Rp", titik, spasi)
         $hargaClean = preg_replace('/[^\d]/', '', $request->harga);
         if (!is_numeric($hargaClean) || $hargaClean < 0) {
-             return back()->withInput()->withErrors(['harga' => 'Format harga tidak valid atau harga negatif.']);
+             return back()->withInput()->withErrors(['harga' => 'Format harga tidak valid atau harga negatif. Pastikan hanya angka yang dimasukkan.']);
         }
         $data['harga'] = $hargaClean;
 
-
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
             if ($menu->gambar && Storage::disk('public')->exists($menu->gambar)) {
                 Storage::disk('public')->delete($menu->gambar);
             }
-            // Simpan gambar baru
             $data['gambar'] = $request->file('gambar')->store('menus', 'public');
         }
 
@@ -116,15 +108,12 @@ class MenuController extends Controller
         return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil diperbarui.');
     }
 
-    public function destroy(Menu $menu)
+    public function destroy(Menu $menu) // Route Model Binding
     {
-        // Hapus gambar jika ada
         if ($menu->gambar && Storage::disk('public')->exists($menu->gambar)) {
             Storage::disk('public')->delete($menu->gambar);
         }
-
         $menu->delete();
-
         return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil dihapus.');
     }
 }

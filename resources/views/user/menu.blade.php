@@ -11,6 +11,32 @@
         opacity: 0.7;
         cursor: not-allowed;
     }
+
+    /* Tambahan untuk deskripsi menu */
+    .menu-description {
+        /* Pastikan teks panjang bisa pindah baris dengan baik */
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        /* Anda bisa mengatur min-height jika deskripsi sangat pendek agar card tidak terlalu kosong */
+        /* Misalnya: min-height: 4.5em; (sekitar 3 baris teks) */
+        /* Sesuaikan nilai em atau rem sesuai kebutuhan font Anda */
+    }
+
+    .card-body {
+        /* Pastikan flexbox sudah benar, ini sudah ada di kode Anda */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-body .card-text.flex-grow-1 {
+        /* Ini adalah elemen deskripsi, pastikan ia tumbuh */
+        flex-grow: 1 !important; /* !important mungkin tidak perlu jika tidak ada konflik */
+    }
+
+    .card-body .d-grid {
+        /* Pastikan tombol selalu di bawah */
+        margin-top: auto; /* Ini sudah ada via kelas .mt-auto */
+    }
 </style>
 @endpush
 
@@ -22,8 +48,7 @@
     </div>
 
     {{-- Form Pencarian --}}
-    {{-- ... (Form pencarian Anda) ... --}}
-     <form action="{{ route('menu') }}" method="GET" class="row mb-5 justify-content-center align-items-center g-2">
+    <form action="{{ route('menu') }}" method="GET" class="row mb-5 justify-content-center align-items-center g-2">
         <div class="col-lg-5 col-md-6">
             <input type="text" name="search" class="form-control form-control-lg rounded-pill shadow-sm" placeholder="Cari menu..."
                    value="{{ request('search') }}">
@@ -61,12 +86,11 @@
                     {{-- Body Card --}}
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title fw-semibold">{{ $menu->nama }}</h5>
-                        <p class="card-text text-muted small flex-grow-1">{{ Str::limit($menu->deskripsi, 80) }}</p>
+                        {{-- UBAH BARIS INI: Hapus Str::limit dan tambahkan class menu-description --}}
+                        <p class="card-text text-muted small flex-grow-1 menu-description">{{ $menu->deskripsi }}</p>
                         <p class="card-text fs-5 fw-bold text-primary-agatha mb-3">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
                         {{-- Tombol Add to Cart (AJAX) --}}
-                        <div class="d-grid mt-auto"> {{-- Hapus form, gunakan div --}}
-                             {{-- Ubah type="submit" menjadi type="button" --}}
-                             {{-- Tambahkan data-id dan class baru --}}
+                        <div class="d-grid mt-auto"> {{-- mt-auto akan mendorong ini ke bawah --}}
                             <button type="button" class="btn btn-success btn-add-to-cart rounded-pill btn-ajax-add-to-cart" data-id="{{ $menu->id }}">
                                 <span class="button-icon"><i class="fas fa-cart-plus me-2"></i></span>
                                 <span class="button-text">Tambah ke Keranjang</span>
@@ -86,16 +110,14 @@
     </div>
 
     {{-- PAGINATION --}}
-    {{-- ... (Kode pagination Anda) ... --}}
-     @if ($menus->hasPages())
+    @if ($menus->hasPages())
         <div class="mt-5 d-flex justify-content-center">
             {{ $menus->withQueryString()->links('pagination::bootstrap-5') }}
         </div>
     @endif
 
     {{-- Promo & Event Banner --}}
-    {{-- ... (Kode banner Anda) ... --}}
-     <div class="promo-event-banner mt-5 mb-4 py-4 px-3 rounded-4 text-center shadow-lg position-relative" style="background: linear-gradient(135deg, #FFB347, #FF8030);">
+    <div class="promo-event-banner mt-5 mb-4 py-4 px-3 rounded-4 text-center shadow-lg position-relative" style="background: linear-gradient(135deg, #FFB347, #FF8030);">
         <div class="row align-items-center">
             <div class="col-md-8 text-md-start text-center text-white">
                 <h2><i class="fas fa-tags me-2"></i> Promo & Event Spesial</h2>
@@ -110,12 +132,9 @@
         <div class="decoration-circle position-absolute" style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; top: -20px; right: 30px;"></div>
         <div class="decoration-circle position-absolute" style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; bottom: -15px; left: 40px;"></div>
     </div>
-
 </div>
 
-
 <!-- Modal Login Diperlukan -->
-{{-- ... (Kode Modal Anda, sama seperti sebelumnya) ... --}}
 <div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow border-0 rounded-3">
@@ -133,10 +152,7 @@
         </div>
     </div>
 </div>
-
-
-@endsection {{-- Akhir section content --}}
-
+@endsection
 
 @push('scripts')
 {{-- ... (CDN dan meta tag lainnya) ... --}}
@@ -153,7 +169,7 @@ $(document).ready(function() {
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
     });
 
-    var loginModalElement = document.getElementById('loginRequiredModal'); // Ganti ID jika beda
+    var loginModalElement = document.getElementById('loginRequiredModal');
     var loginModal = loginModalElement ? new bootstrap.Modal(loginModalElement) : null;
 
     $(document).on('click', '.btn-ajax-add-to-cart', function(event) {
@@ -162,10 +178,9 @@ $(document).ready(function() {
         const menuId = button.data('id');
 
         if (!IS_LOGGED_IN) {
-            // Panggil modal login generik dari app.blade.php
             if (typeof showLoginPopupRequired === 'function') {
                 showLoginPopupRequired(event, 'menambahkan item ke keranjang');
-            } else if (loginModal) { // Fallback jika fungsi global tidak ada (seharusnya ada)
+            } else if (loginModal) {
                 loginModal.show();
             } else {
                 alert('Anda harus masuk untuk menambahkan item.');
@@ -174,7 +189,6 @@ $(document).ready(function() {
             return;
         }
 
-        // UI Loading
         const originalIcon = button.find('.button-icon').html();
         const originalText = button.find('.button-text').text();
         button.find('.button-icon').addClass('d-none');
@@ -188,19 +202,14 @@ $(document).ready(function() {
             data: { menu_id: menuId },
             success: function(response) {
                 if (response.success) {
-                    // Gunakan fungsi toast global jika ada, atau lokal
                     if (typeof showGlobalToast === 'function') {
                         showGlobalToast('success', response.message || 'Item ditambahkan!');
                     } else {
-                        showToast('success', response.message || 'Item ditambahkan!'); // Fallback ke fungsi toast lokal
+                        showToast('success', response.message || 'Item ditambahkan!');
                     }
-
-                    // ====== PANGGIL FUNGSI GLOBAL UNTUK UPDATE BADGE ======
                     if (response.cartCount !== undefined && typeof updateGlobalCartBadge === 'function') {
                         updateGlobalCartBadge(response.cartCount);
                     }
-                    // =======================================================
-
                 } else {
                     if (typeof showGlobalToast === 'function') {
                         showGlobalToast('error', response.message || 'Gagal menambahkan item.');
@@ -218,7 +227,6 @@ $(document).ready(function() {
                 }
             },
             complete: function() {
-                // Kembalikan tombol ke state normal
                 button.find('.button-spinner').addClass('d-none');
                 button.find('.button-icon').html(originalIcon).removeClass('d-none');
                 button.find('.button-text').text(originalText);
@@ -227,13 +235,11 @@ $(document).ready(function() {
         });
     });
 
-    // Fungsi toast lokal (jika showGlobalToast tidak didefinisikan di app.blade.php atau ada konflik)
     function showToast(icon, title) {
         const Toast = Swal.mixin({toast: true,position: 'top-end',showConfirmButton: false,timer: 3000,timerProgressBar: true,didOpen: (t) => {t.addEventListener('mouseenter', Swal.stopTimer);t.addEventListener('mouseleave', Swal.resumeTimer)}});
         Toast.fire({icon: icon,title: title});
     }
 
-    // Notifikasi session flash (jika masih ada)
     @if(session('success'))
         if (typeof showGlobalToast === 'function') showGlobalToast('success', '{{ session('success') }}');
         else showToast('success', '{{ session('success') }}');

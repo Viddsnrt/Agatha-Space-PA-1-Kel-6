@@ -68,7 +68,21 @@
   <a href="{{ route('admin.table.index') }}" class="nav-link">
     <i class="nav-icon fas fa-concierge-bell "></i>
     <p>Reservasi</p>
-  </a>
+</a>
+
+     <li class="nav-item">
+      <a href="{{ route('admin.users.index') }}" class="nav-link">
+      <i class= "nav-icon fas fa-users "> </i>
+      <p>Kelola Pengguna</p>
+</a>
+
+        <li class="nav-item">
+          <a href="{{ route('admin.orders.index') }}" class="nav-link">
+            <i class= "nav-icon fas fa-shopping-cart "> </i>
+            <p>Pesanan Pelanggan</p>
+</a>
+    
+      
 </li>
 
 </li>
