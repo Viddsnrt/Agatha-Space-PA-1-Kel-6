@@ -16,18 +16,7 @@ class KritikSaranController extends Controller
      */
     public function list(Request $request)
     {
-        // --- MULAI DEBUGGING ---
-        // Hapus atau komentari bagian ini setelah masalah teridentifikasi
-        if (env('APP_DEBUG', false)) { // Hanya jalankan dump saat APP_DEBUG true
-            dump([
-                'REQUEST_FROM_NAVBAR_CLICK?' => !$request->isMethod('post') && !$request->old() && !$request->query('show_form'),
-                'session_has_errors' => session()->has('errors'),
-                'session_errors_content' => session('errors') ? session('errors')->all() : 'No errors in session',
-                'request_query_show_form' => $request->query('show_form'),
-                'request_old_input' => $request->old(), // Menampilkan input lama jika ada (setelah validasi gagal)
-            ]);
-        }
-        // --- AKHIR DEBUGGING ---
+  
 
         $kritikSaran = KritikSaran::where('tampilkan', true)
                                  ->latest()
@@ -39,11 +28,7 @@ class KritikSaranController extends Controller
                     || (session()->has('errors') && !empty($request->old())) // Tampil jika ada error DAN ada old input (menandakan redirect back with errors dari form ini)
                     || $request->query('show_form') === 'true'; // Tampil jika ada parameter show_form
 
-        // --- DEBUGGING NILAI AKHIR $showForm ---
-        if (env('APP_DEBUG', false)) {
-            dump(['final_showForm_value' => $showForm]);
-        }
-        // --- AKHIR DEBUGGING ---
+       
 
         return view('user.kritik_saran.index', compact('kritikSaran', 'showForm'));
     }
