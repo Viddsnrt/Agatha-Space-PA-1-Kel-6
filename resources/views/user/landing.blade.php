@@ -323,7 +323,7 @@
                     <li class="nav-item">
                         @auth
                             <a class="nav-link {{ request()->routeIs('kritik-saran.create') ? 'active' : '' }}"
-                            href="{{ route('kritik-saran.create') }}">
+                            href="{{ route('kritik-saran.list') }}">
                                 <i class="fas fa-comment-alt"></i>Kritik & Saran
                             </a>
                         @else

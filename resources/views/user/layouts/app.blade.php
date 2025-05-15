@@ -187,12 +187,14 @@
           <li class="nav-item"><a class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}" href="{{ route('menu') }}"><i class="fas fa-utensils me-1"></i>Menu</a></li>
           <li class="nav-item"><a class="nav-link {{ request()->routeIs('reservasi') ? 'active' : '' }}" href="{{ route('reservasi') }}"><i class="fas fa-calendar-check me-1"></i>Reservasi</a></li>
           <li class="nav-item"><a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}"><i class="fas fa-images me-1"></i>Galeri</a></li>
-          <li class="nav-item">
+                    <li class="nav-item">
             @auth
-                <a class="nav-link {{ request()->routeIs('kritik-saran.create') ? 'active' : '' }}" href="{{ route('kritik-saran.create') }}">
+                {{-- INI BAGIAN YANG PERLU DIPERIKSA --}}
+                <a class="nav-link {{ request()->routeIs('kritik-saran.list') ? 'active' : '' }}" href="{{ route('kritik-saran.list') }}">
                     <i class="fas fa-comment-alt me-1"></i>Kritik & Saran
                 </a>
             @else
+                {{-- Jika belum login, Anda sudah benar menggunakan popup --}}
                 <a href="#" class="nav-link" onclick="showLoginPopupRequired(event, 'mengakses Kritik & Saran')">
                     <i class="fas fa-comment-alt me-1"></i>Kritik & Saran
                 </a>
