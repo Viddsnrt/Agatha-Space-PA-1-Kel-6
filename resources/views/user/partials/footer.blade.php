@@ -7,9 +7,10 @@
                 <h2 class="logo-font mb-3">Agatha Space</h2>
                 <p>Agatha Space bukan sekadar tempat menikmati kopi, tapi tempat beristirahat dari hiruk pikuk dunia, di mana waktu melambat dan senja menemani.</p>
                 <div class="social-icons mt-4">
-                    <a href="https://wa.me/6281234567890" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://wa.me/6287894210997" target="_blank"><i class="fab fa-whatsapp"></i></a>
                     <a href="https://www.instagram.com/agathaspace.balige" target="_blank"><i class="fab fa-instagram"></i></a>
-                </div>
+                    <a href=https://www.tiktok.com/@agathaspace.balige?_t=ZS-8wN51NIkoug&_r=1" target="_blank" title="TikTok Agatha Space"><i class="fab fa-tiktok"></i></a>
+                    </div>
             </div>
 
             <!-- Navigasi -->
@@ -31,8 +32,8 @@
                 <ul class="list-unstyled contact-info">
                     <li><i class="fas fa-map-marker-alt me-2"></i> 83P6+5FP, Jl. Siliwangi, Kec. Balige, Toba, Sumatera Utara, Indonesia</li>
                     <li><i class="fas fa-phone me-2"></i>+62 878 9421 0997</li>
-                    <li><i class="fas fa-envelope me-2"></i> agathaspace@gmail.com</li>
-                    <li><i class="fas fa-globe me-2"></i> www.agathaspace.com</li>
+                    <!-- <li><i class="fas fa-envelope me-2"></i> agathaspace@gmail.com</li> -->
+                    <li><i class="fas fa-globe me-2"></i> www.agathaspacebalige.blgumkm.site</li>
                 </ul>
             </div>
         </div>

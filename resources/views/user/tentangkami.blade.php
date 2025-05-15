@@ -40,24 +40,23 @@
 
     /* Hero Section */
     .hero-tentang {
-        /* Ganti 'path/to/your/hero-image.jpg' dengan gambar yang sesuai */
-        background: linear-gradient(rgba(40, 20, 10, 0.6), rgba(40, 20, 10, 0.6)), url('{{ asset('images/agatha-hero-banner.jpg') }}') no-repeat center center;
-        background-size: cover;
-        padding: 100px 0;
-        color: #fff;
-    }
-    .hero-tentang h1 {
-        font-size: 3.5rem;
-        color: #fff;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-    .hero-tentang .lead {
-        font-size: 1.25rem;
-        color: #f0f0f0;
-        max-width: 700px;
-        margin-left: auto;
-        margin-right: auto;
-    }
+    background-color: #f8f9fa; /* Abu-abu sangat muda (Bootstrap default light) */
+    padding: 100px 0;
+    color: #333; /* Teks menjadi abu-abu gelap atau hitam */
+    text-align: center;
+}
+.hero-tentang h1 {
+    font-size: 3.5rem;
+    color: #4a2f27; /* Bisa juga #333 atau warna utama brand Anda */
+    text-shadow: none;
+}
+.hero-tentang .lead {
+    font-size: 1.25rem;
+    color: #555; /* Warna subjudul abu-abu */
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
     /* Section Cerita Kami */
     .cerita-kami-section {
@@ -74,7 +73,7 @@
     }
 
     .slogan-box {
-        background-color: #f8f5f2;
+        background-color:rgb(242, 248, 244);
         border-left: 5px solid #a8745f; /* Aksen warna */
         padding: 20px;
         margin: 30px 0;
@@ -84,7 +83,7 @@
         font-family: 'Playfair Display', serif;
         font-size: 1.75rem;
         font-weight: 500;
-        color: #4a2f27;
+        color:rgb(64, 74, 39);
         font-style: italic;
         margin: 0;
     }
@@ -278,20 +277,20 @@
                         <div class="kontak-info-list">
                             <div class="kontak-item">
                                 <i class="fas fa-phone-alt"></i>
-                                +62 812-3456-7890</a>
+                                +62 878 9421 0997</a>
                             </div>
                             <div class="kontak-item">
                                 <i class="fab fa-instagram"></i>
-                                @agathaspace.id</a>
+                                @agathaspace.balige</a>
                             </div>
                             <div class="kontak-item">
                                 <i class="fab fa-tiktok"></i>
-                                @agathaspace.id</a>
+                                @agathaspace.balige</a>
                             </div>
-                             <div class="kontak-item">
+                             <!-- <div class="kontak-item">
                                 <i class="fas fa-envelope"></i>
                                info@agathaspace.com</a>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
