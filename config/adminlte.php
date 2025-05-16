@@ -24,7 +24,7 @@ return [
     // 'logo_img_xl_class' => 'brand-image-xs',
 
     'auth_logo' => [
-        'enabled' => true, // Aktifkan jika ingin logo di halaman login/register
+        'enabled' => false, // Aktifkan jika ingin logo di halaman login/register
         'img' => [
             'path' => 'img/agathaspace_logo.png', // GANTI DENGAN PATH LOGO KAMU
             'alt' => 'Auth Logo',
@@ -35,7 +35,7 @@ return [
     ],
 
     'preloader' => [
-        'enabled' => true,
+        'enabled' => false,
         'mode' => 'fullscreen', // atau 'standard'
         'img' => [
             'path' => 'img/agathaspace_logo.png', // GANTI DENGAN PATH LOGO KAMU
@@ -46,12 +46,12 @@ return [
         ],
     ],
 
-    'usermenu_enabled' => true,
-    'usermenu_header' => true, // Tampilkan header dengan nama user di dropdown
+    'usermenu_enabled' => false,
+    'usermenu_header' => false, // Tampilkan header dengan nama user di dropdown
     'usermenu_header_class' => 'bg-primary', // Warna header dropdown user
-    'usermenu_image' => true, // Tampilkan avatar user (jika ada field avatar di model User)
+    'usermenu_image' => false, // Tampilkan avatar user (jika ada field avatar di model User)
     'usermenu_desc' => true, // Tampilkan role atau deskripsi user (jika ada)
-    'usermenu_profile_url' => '#', // Arahkan ke halaman profil user jika ada
+    'usermenu_profile_url' => 'false', // Arahkan ke halaman profil user jika ada
 
     // Layout options
     'layout_topnav' => null,
@@ -155,21 +155,23 @@ return [
         ],
 
         ['header' => 'MANAJEMEN PENGGUNA', 'classes' => 'text-bold text-uppercase'],
+        
         [
             'text'    => 'Pengguna',
             'route'     => 'admin.users.index',
             'icon'    => 'fas fa-fw fa-users',
+        ],
 
         [ 
             'text' => 'Keluar',
             'route' => 'logout',
             'icon'  =>'fas fa-sign-out-alt' ,
-        ]    
+        ],
 
 
            
             // 'can'  => 'manage-users', // Aktifkan jika pakai permission
-        ],
+        
         // Contoh submenu:
         // [
         //     'text' => 'Pengaturan',

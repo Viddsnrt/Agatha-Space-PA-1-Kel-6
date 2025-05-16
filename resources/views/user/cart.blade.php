@@ -53,7 +53,7 @@
     $bankDetails = [
         'bank_name' => 'Bank BRI',
         'account_number' => '0314 0102 1987 535',
-        'account_holder' => 'Agatha Space Cafe',
+        'account_holder' => 'Donni Perdana Kesuma',
     ];
     $qrisImageUrl = asset('images/qris_agatha.png'); // Ganti dengan path gambar QRIS Anda
 @endphp
@@ -141,7 +141,7 @@
                             <select class="form-select form-select-lg" id="payment_method" name="payment_method" required>
                                 <option value="" selected disabled>Pilih Metode Pembayaran</option>
                                 <option value="Tunai di Tempat">Tunai di Tempat (COD)</option>
-                                <option value="QRIS">QRIS (Scan di Tempat)</option>
+                                <!-- <option value="QRIS">QRIS (Scan di Tempat)</option> -->
                                 <option value="Transfer Bank">Transfer Bank</option>
                             </select>
                         </div>

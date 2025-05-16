@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+// use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -43,5 +44,37 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // --- Tambahan untuk mendukung AdminLTE ---
+
+    /**
+     * Gambar profil pengguna di AdminLTE.
+     *
+     * @return string
+     */
+    public function adminlte_image()
+    {
+        return asset('images/default-avatar.png'); // Ganti jika punya kolom avatar sendiri
+    }
+
+    /**
+     * Deskripsi singkat pengguna di dropdown AdminLTE.
+     *
+     * @return string
+     */
+    public function adminlte_desc()
+    {
+        return 'Admin'; // Bisa juga dari kolom role jika ada
+    }
+
+    /**
+     * URL ke profil pengguna (jika ada).
+     *
+     * @return string
+     */
+    public function adminlte_profile_url()
+    {
+        return '#'; // Atau route('profile.show') jika punya halaman profil
     }
 }
