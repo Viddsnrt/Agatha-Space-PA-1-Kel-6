@@ -105,10 +105,38 @@
     </div>
   </aside>
 
-  <!-- Content Wrapper -->
-  <div class="content-wrapper p-3">
-    @yield('content')
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-12"> {{-- Atau col-sm-6 jika Anda ingin breadcrumb di sebelahnya --}}
+            {{-- DI SINI TEMPAT UNTUK CONTENT HEADER --}}
+            @yield('content_header')
+          </div><!-- /.col -->
+          {{-- Anda bisa menambahkan breadcrumb di sini jika mau --}}
+          {{-- <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">@yield('title')</li>
+            </ol>
+          </div> --}}
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        {{-- KONTEN UTAMA HALAMAN --}}
+        @yield('content')
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
   </div>
+  <!-- /.content-wrapper -->
 
   <!-- Footer -->
   <footer class="main-footer text-center">

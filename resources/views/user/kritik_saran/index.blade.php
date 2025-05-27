@@ -151,7 +151,7 @@
                     <div class="feedback-card w-100">
                         <div class="card-header-info">
                             <div class="user-info">
-                                <h5 class="card-title">{{ Str::words($item->nama, 3, '...') }}</h5>
+                                <h5 class="card-title">{{$item->nama, 3, '...'}}</h5>
                                 <p class="text-muted">{{ $item->created_at->isoFormat('dddd, D MMMM YYYY, HH:mm') }}</p>
                             </div>
                             <span class="badge bg-{{ $item->jenis == 'kritik' ? 'kritik' : 'saran' }} flex-shrink-0">

@@ -137,8 +137,9 @@ Route::middleware(['auth', ]) // Pastikan middleware 'is_admin' sudah Anda buat 
     Route::resource('reservations', AdminReservationController::class)->except(['create', 'store']); // Admin biasanya hanya melihat & mengelola
 
     // Order Management Admin Routes
-    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show'); // Route model binding untuk order
-    Route::post('/orders/{order}/update-status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
-    Route::delete('/orders/{order}', [AdminOrderController::class, 'destroy'])->name('orders.destroy'); // Tambahkan route delete
+     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/download-pdf', [AdminOrderController::class, 'downloadPdf'])->name('orders.downloadPdf'); // Route baru untuk PDF
+    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    // Route::post('/orders/{order}/update-status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus'); // Komentari jika tidak dipakai
+    Route::delete('/orders/{order}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 });

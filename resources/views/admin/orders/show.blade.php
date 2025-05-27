@@ -3,12 +3,16 @@
 @section('title', 'Detail Pesanan #' . $order->id)
 
 @section('content_header')
-    <h1>Detail Pesanan #{{ $order->id }}</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Detail Pesanan #{{ $order->id }}</h1>
+        <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-default"><i class="fas fa-arrow-left mr-1"></i> Kembali ke Daftar</a>
+    </div>
 @stop
 
 @section('content')
     <div class="row">
         <div class="col-md-8">
+            {{-- ... Card Item Pesanan dan Ringkasan WA tetap sama ... --}}
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Item Pesanan</h3>
@@ -64,29 +68,52 @@
                         <p><strong>Akun Pengguna:</strong> Tamu</p>
                     @endif
                     <p><strong>Metode Pembayaran:</strong> {{ $order->payment_method }}</p>
+                    
+                    {{-- Baris yang Menampilkan Status Saat Ini Dihapus --}}
+                    {{--
+                    <p><strong>Status Saat Ini:</strong>
+                        <span class="badge badge-{{ $order->status == 'completed' ? 'success' : ($order->status == 'cancelled' ? 'danger' : ($order->status == 'processing' || $order->status == 'on_delivery' ? 'info' : 'warning')) }}">
+                            {{ ucfirst(str_replace('_', ' ', $order->status)) }}
+                        </span>
+                    </p>
+                    --}}
+
                     <p><strong>Tanggal Pesan:</strong> {{ $order->created_at->format('d M Y, H:i A') }}</p>
                     <p><strong>Total Pembayaran:</strong> <strong class="text-success">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</strong></p>
                     @if($order->notes)
                         <p><strong>Catatan:</strong> <br> <em class="text-muted">{{ $order->notes }}</em></p>
                     @endif
-                     <hr>
-                    <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST">
-                        @csrf
-                        <div class="form-group">
-                            <label for="status">Update Status Pesanan:</label>
-                            <select name="status" id="status" class="form-control">
-                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Diproses</option>
-                                <option value="on_delivery" {{ $order->status == 'on_delivery' ? 'selected' : '' }}>Dikirim</option>
-                                <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Selesai</option>
-                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Update Status</button>
-                    </form>
                 </div>
             </div>
-             <a href="{{ route('admin.orders.index') }}" class="btn btn-default btn-block"><i class="fas fa-arrow-left mr-1"></i> Kembali ke Daftar Pesanan</a>
+
+            <div class="mt-3">
+                <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan ini secara permanen? Tindakan ini tidak dapat diurungkan.');" style="display: inline-block; width: 100%;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-block">
+                        <i class="fas fa-trash-alt mr-1"></i> Hapus Pesanan Ini
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 @stop
+
+@push('js')
+<script>
+    @if(session('success'))
+        $(document).Toasts('create', {
+            class: 'bg-success',
+            title: 'Berhasil',
+            body: '{{ session('success') }}'
+        });
+    @endif
+    @if(session('error'))
+        $(document).Toasts('create', {
+            class: 'bg-danger',
+            title: 'Gagal',
+            body: '{{ session('error') }}'
+        });
+    @endif
+</script>
+@endpush

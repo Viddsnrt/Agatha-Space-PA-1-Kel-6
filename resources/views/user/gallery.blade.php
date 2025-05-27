@@ -23,17 +23,19 @@
         position: fixed !important; /* Penting agar posisi relatif ke viewport */
         top: 20px !important; /* Jarak dari atas */
         right: 20px !important; /* Jarak dari kanan */
-        z-index: 9999 !important; /* Pastikan di atas segalanya */
+        z-index: 99999 !important; /* Pastikan di atas segalanya, naikkan sedikit dari default lightbox (biasanya 9998 untuk overlay) */
 
         /* Tampilan Tombol */
-        background: rgba(0, 0, 0, 0.7) url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAAnNCSVQICAjb4U/gAAAA9klEQVQoFQEQAo//AgARADsClAD/AAAA/wDs9goArAD/Au//BABk/wQAfP8EAGQAAABkAAAAZP8EAGQAAAAYAGQAGAAAAGQAGAAAAGQAAAAAAAAAAP8GAP8AAP8GAP8AAGQAGAAAAGQAGAAAAGQAGAAAAGQAGAAAAGQAGAAAAGQAGAAAAGQAAAAAAP8EAAAAZP8EAGQAAACsAP8C7/4GAOv+BgCv/wQAZP8EAGQAAABkAAAAZP8EAGQAAAAAAP8AAP8AAAAAAAD/AAD/AAAAAAAA/wAAAP8AAAD/AAAA/wAAAP8AAAAAZP8EAAAAZP8EAAAAZP8EAGQAAAAYAGQAGAAAAGQAGAAAAGQAAAAAAP8A/wAAAAC8/wD/AAAAAAD///8AAAAAAAAAAP8i33AlZH/MbAAAAAElFTkSuQmCC') no-repeat center center !important; /* Ganti background dengan warna + ikon X sederhana (base64) */
-        background-size: 16px 16px !important; /* Ukuran ikon X di dalam background */
+        /* Ganti background dengan warna + ikon X putih (SVG base64) */
+        background: rgba(0, 0, 0, 0.7) url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PGxpbmUgeDE9IjE4IiB5MT0iNiIgeDI9IjYiIHkyPSIxOCI+PC9saW5lPjxsaW5lIHgxPSI2IiB5MT0iNiIgeDI9IjE4IiB5Mj0iMTgiPjwvbGluZT48L3N2Zz4=') no-repeat center center !important;
+        background-size: 20px 20px !important; /* Ukuran ikon X di dalam background (sesuaikan jika perlu) */
         opacity: 0.8 !important; /* Sedikit transparan */
         border-radius: 50% !important; /* Buat jadi bulat */
         text-indent: -9999px !important; /* Sembunyikan teks default (jika ada) */
         border: 2px solid white !important; /* Optional: border putih */
         transition: opacity 0.2s ease;
         cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Tambahkan shadow halus agar lebih menonjol */
     }
 
     .lb-close:hover {
@@ -78,13 +80,8 @@
     <div class="row g-3"> {{-- g-3 untuk sedikit jarak antar gambar --}}
         @forelse($images as $image)
             <div class="col-6 col-md-4 col-lg-3 gallery-item"> {{-- Tambah class gallery-item --}}
-                {{-- Pastikan path gambar benar --}}
                 @php
                     $imageUrl = asset('uploads/gallery/' . $image->image);
-                    // Optional: Tambahkan pengecekan jika file ada
-                    // if (!file_exists(public_path('uploads/gallery/' . $image->image))) {
-                    //     $imageUrl = asset('path/to/placeholder.jpg'); // Gambar placeholder jika file tidak ada
-                    // }
                 @endphp
                  <a href="{{ $imageUrl }}"
                     data-lightbox="galeri-agatha" {{-- Beri nama unik untuk grup lightbox --}}

@@ -365,7 +365,7 @@
                     @else
                         <li class="nav-item dropdown ms-lg-3">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle me-2"></i>{{ Str::words(Auth::user()->name, 2, '') }}
+                               <i class="fas fa-user-circle me-2"></i>{{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
                                 @if(Auth::user()->is_admin)
@@ -441,7 +441,7 @@
                                 @endif
                                 <div class="card-body d-flex flex-column p-4">
                                     <h5 class="card-title">{{ $menu->nama }}</h5>
-                                    <p class="card-text text-muted mb-3">{{ Str::limit($menu->deskripsi, 70) }}</p>
+                                    <p class="card-text text-muted mb-3">{{$menu->deskripsi, 70}}</p>
                                     <div class="mt-auto">
                                         <p class="fw-bold text-primary-agatha mb-3 fs-5" style="color: #ED5D2B;">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
                                         <a href="{{ route('menu', ['search' => $menu->nama]) }}" class="btn btn-primary w-100 rounded-pill">
