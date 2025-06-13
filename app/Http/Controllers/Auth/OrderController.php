@@ -8,19 +8,21 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Order;
-use App\Models\OrderItem;
+use App\Models\OrderItem; // Pastikan model ini ada dan digunakan dengan benar
 
 class OrderController extends Controller
 {
     public function placeOrder(Request $request)
     {
-        $request->validate([
+        // Validasi input, termasuk jam_kedatangan
+        $validatedData = $request->validate([
             'customer_name' => 'required|string|max:255',
-            'customer_phone' => 'nullable|string|max:20',
-            'payment_method' => 'required|string|max:50',
-            'notes' => 'nullable|string',
-            'order_summary_text_wa' => 'required|string', // Ini dari hidden input
-            'total_amount_for_db' => 'required|numeric|min:0', // Ini dari hidden input
+            'customer_phone' => 'nullable|string|max:20|regex:/^[0-9\-\+\s\(\)]*$/', // Regex lebih fleksibel
+            'jam_kedatangan' => 'required|date_format:H:i', // Validasi format jam (HH:MM)
+            'payment_method' => 'required|string|max:50', // Sesuaikan panjang max jika perlu
+            'notes' => 'nullable|string|max:1000', // Batasi panjang catatan
+            // 'order_summary_text_wa' => 'required|string', // Hapus jika tidak digunakan lagi, atau buat nullable
+            'total_amount_for_db' => 'required|numeric|min:0',
         ]);
 
         $cart = session()->get('cart', []);
@@ -32,21 +34,28 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             $order = Order::create([
-                'user_id' => Auth::id(), // Akan null jika tidak login
-                'customer_name' => $request->customer_name,
-                'customer_phone' => $request->customer_phone,
-                'payment_method' => $request->payment_method,
-                'total_amount' => $request->total_amount_for_db,
-                'notes' => $request->notes,
-                'status' => 'pending', // Status awal
-                'order_details_text' => $request->order_summary_text_wa, // Simpan ringkasan WA
-                'whatsapp_message_sent' => true, // Asumsi akan dikirim setelah ini
+                'user_id' => Auth::id(),
+                'customer_name' => $validatedData['customer_name'],
+                'customer_phone' => $validatedData['customer_phone'],
+                'payment_method' => $validatedData['payment_method'],
+                'total_amount' => $validatedData['total_amount_for_db'],
+                'notes' => $validatedData['notes'],
+                'jam_kedatangan' => $validatedData['jam_kedatangan'], // SIMPAN JAM KEDATANGAN
+                // 'status' => 'pending', // DIHAPUS
+                // Jika order_summary_text_wa masih dibutuhkan, pastikan dikirim dari form atau generate di sini
+                'order_details_text' => $request->input('order_summary_text_wa', $this->generateOrderDetailsText($cart, $validatedData['total_amount_for_db'])),
+                'whatsapp_message_sent' => true, // Asumsi akan dikirim, bisa diubah logikanya
             ]);
 
             foreach ($cart as $id => $details) {
+                // Pastikan $id adalah menu_id yang valid
+                if (!isset($details['nama']) || !isset($details['quantity']) || !isset($details['harga'])) {
+                    Log::warning("Skipping invalid cart item during order creation: Menu ID " . $id);
+                    continue; // Lewati item yang tidak lengkap
+                }
                 OrderItem::create([
                     'order_id' => $order->id,
-                    'menu_id' => $id, // Asumsi ID di cart adalah menu_id
+                    'menu_id' => $id,
                     'menu_name' => $details['nama'],
                     'quantity' => $details['quantity'],
                     'price_at_order' => $details['harga'],
@@ -55,9 +64,7 @@ class OrderController extends Controller
             }
 
             DB::commit();
-
-            // Kosongkan keranjang setelah pesanan berhasil dibuat
-            session()->forget('cart');
+            session()->forget('cart'); // Kosongkan keranjang
 
             return response()->json([
                 'success' => true,
@@ -65,13 +72,35 @@ class OrderController extends Controller
                 'order_id' => $order->id
             ]);
 
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
-            Log::error("Error placing order: " . $e->getMessage() . " - Stack: " . $e->getTraceAsString());
+            Log::error("Validation error placing order: " . $e->getMessage() . " - Errors: " . json_encode($e->errors()));
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan saat memproses pesanan Anda. Silakan coba lagi. Error: ' . $e->getMessage() // Hapus detail error di production
+                'message' => 'Data yang Anda masukkan tidak valid. Mohon periksa kembali.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Error placing order: " . $e->getMessage() . " - Stack: " . $e->getTraceAsString() . " - Data: " . json_encode($request->all()));
+            return response()->json([
+                'success' => false,
+                // Pesan error yang lebih umum untuk produksi
+                'message' => 'Terjadi kesalahan saat memproses pesanan Anda. Silakan coba lagi atau hubungi dukungan.'
+                // 'message' => 'Terjadi kesalahan: ' . $e->getMessage() // Detail error untuk development
             ], 500);
         }
+    }
+
+    // Helper function untuk membuat teks detail order jika order_summary_text_wa tidak dikirim dari form
+    private function generateOrderDetailsText(array $cart, $totalAmount)
+    {
+        $detailsText = "Detail Pesanan:\n";
+        foreach ($cart as $item) {
+            $subtotal = $item['harga'] * $item['quantity'];
+            $detailsText .= "- {$item['nama']} ({$item['quantity']}x) = Rp " . number_format($subtotal, 0, ',', '.') . "\n";
+        }
+        $detailsText .= "\nTotal Keseluruhan: Rp " . number_format($totalAmount, 0, ',', '.');
+        return $detailsText;
     }
 }

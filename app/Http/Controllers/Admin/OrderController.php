@@ -5,13 +5,43 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use PDF; // Import class PDF dari package dompdf
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon; // Import Carbon
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('user')->latest()->paginate(15);
+        $query = Order::with('user')->latest(); // Eager load user
+
+        // Filter berdasarkan pencarian ID atau Nama Pemesan
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('id', 'like', "%{$searchTerm}%")
+                  ->orWhere('customer_name', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // Contoh Filter berdasarkan Rentang Tanggal Pemesanan (jika menggunakan daterangepicker)
+        // if ($request->filled('date_range')) {
+        //     $dates = explode(' - ', $request->date_range);
+        //     if (count($dates) == 2) {
+        //         $startDate = Carbon::createFromFormat('Y-m-d', trim($dates[0]))->startOfDay();
+        //         $endDate = Carbon::createFromFormat('Y-m-d', trim($dates[1]))->endOfDay();
+        //         $query->whereBetween('created_at', [$startDate, $endDate]);
+        //     }
+        // }
+
+        // Filter berdasarkan Jam Kedatangan (Contoh jika ingin filter spesifik jam)
+        if ($request->filled('filter_jam_kedatangan')) {
+            // Asumsi format input adalah HH:MM
+            $query->whereTime('jam_kedatangan', $request->filter_jam_kedatangan);
+        }
+
+
+        $orders = $query->paginate(15)->appends($request->query()); // appends untuk menjaga filter saat paginasi
+
         return view('admin.orders.index', compact('orders'));
     }
 
@@ -21,51 +51,39 @@ class OrderController extends Controller
         return view('admin.orders.show', compact('order'));
     }
 
-    // Hapus atau komentari method updateStatus jika sudah tidak digunakan
-    // public function updateStatus(Request $request, Order $order)
-    // {
-    //     $request->validate(['status' => 'required|in:pending,processing,completed,cancelled,on_delivery']);
-    //     $order->update(['status' => $request->status]);
-    //     return redirect()->route('admin.orders.show', $order)->with('success', 'Status pesanan berhasil diperbarui.');
-    // }
-
     public function destroy(Order $order)
     {
-        $order->items()->delete();
         $order->delete();
         return redirect()->route('admin.orders.index')->with('success', 'Pesanan berhasil dihapus.');
     }
 
-    /**
-     * Generate PDF Laporan Pesanan.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function downloadPdf(Request $request) // Tambahkan Request jika ingin filter
+    public function downloadPdf(Request $request)
     {
-        // Untuk saat ini, kita ambil semua pesanan.
-        // Nanti bisa ditambahkan filter berdasarkan tanggal, status, dll.
-        // Contoh: $orders = Order::query();
-        // if ($request->has('start_date') && $request->start_date) {
-        //     $orders->whereDate('created_at', '>=', $request->start_date);
-        // }
-        // if ($request->has('end_date') && $request->end_date) {
-        //     $orders->whereDate('created_at', '<=', $request->end_date);
-        // }
-        // $data['orders'] = $orders->with('user')->latest()->get();
+        $query = Order::with('user')->latest();
 
-        $data['orders'] = Order::with('user')->latest()->get(); // Ambil semua pesanan, tidak dipaginasi
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('id', 'like', "%{$searchTerm}%")
+                  ->orWhere('customer_name', 'like', "%{$searchTerm}%");
+            });
+        }
+        // Anda bisa menambahkan filter lain di sini, sama seperti di method index()
+        // if ($request->filled('date_range')) {
+        //     // ... logika filter tanggal ...
+        // }
+        if ($request->filled('filter_jam_kedatangan')) {
+            $query->whereTime('jam_kedatangan', $request->filter_jam_kedatangan);
+        }
+
+
+        $data['orders'] = $query->get();
         $data['totalOverall'] = $data['orders']->sum('total_amount');
+        $data['filterParams'] = $request->all(); // Kirim semua parameter request ke view PDF
 
-
-        $pdf = PDF::loadView('admin.orders.pdf', $data);
-        
-        // Ukuran kertas dan orientasi (opsional)
-        // $pdf->setPaper('a4', 'portrait'); // 'portrait' atau 'landscape'
-
+        // Pastikan view 'admin.orders.pdf' sudah ada dan bisa menampilkan 'jam_kedatangan'
+        $pdf = Pdf::loadView('admin.orders.pdf', $data);
         $filename = 'laporan-pesanan-' . date('Ymd-His') . '.pdf';
-        
-        // return $pdf->stream($filename); // Untuk menampilkan di browser
-        return $pdf->download($filename); // Untuk langsung download
+        return $pdf->download($filename);
     }
 }

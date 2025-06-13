@@ -110,7 +110,7 @@
                                             <span class="text-muted small">Tidak ada</span>
                                         @endif
                                     </td>
-                                    <td>{{ Str::limit($menu->deskripsi, 50) }}</td>
+                                    <td>{{($menu->deskripsi) }}</td>
                                     <td>
                                         <a href="{{ route('admin.menus.edit', $menu->id) }}" class="btn btn-warning btn-xs" data-toggle="tooltip" title="Edit Menu">
                                             <i class="fas fa-edit"></i>

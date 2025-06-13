@@ -53,9 +53,9 @@
   </a>
 
   <li class="nav-item">
-  <a href="{{ route('admin.kritik-saran.index') }}" class="nav-link">
+  <a href="{{ route('admin.testimoni.index') }}" class="nav-link">
     <i class="nav-icon fas fa-comment-dots"></i> 
-    <p>Kritik & Saran</p>
+    <p>Testimoni & Saran</p>
   </a>
 
   <li class="nav-item">

@@ -22,7 +22,7 @@
                     <li><a href="{{ route('menu') }}">Menu</a></li>
                     <li><a href="{{ route('reservasi') }}">Reservasi</a></li>
                     <li><a href="{{ route('gallery') }}">Galeri</a></li>
-                    <li><a href="{{ route('kritik-saran.create') }}">Kritik & Saran</a></li>
+                    <li><a href="{{ route('testimoni.create') }}">Testimoni & Saran</a></li>
                 </ul>
             </div>
 

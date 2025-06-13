@@ -158,11 +158,13 @@
 {{-- ... (CDN dan meta tag lainnya) ... --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <meta name="csrf-token" content="{{ csrf_token() }}">
-
 <script>
     const IS_LOGGED_IN = {{ Auth::check() ? 'true' : 'false' }};
+    const LOGIN_URL = "{{ route('login') }}";
+    // URL untuk halaman menu saat ini (bisa digunakan untuk redirect setelah login)
+    // Atau jika Anda ingin selalu redirect ke halaman menu utama setelah login dari sini:
+    const MENU_PAGE_URL = "{{ route('menu') }}"; // Ganti 'menu' dengan nama route halaman menu Anda jika beda
 </script>
-
 <script>
 $(document).ready(function() {
     $.ajaxSetup({
@@ -171,6 +173,7 @@ $(document).ready(function() {
 
     var loginModalElement = document.getElementById('loginRequiredModal');
     var loginModal = loginModalElement ? new bootstrap.Modal(loginModalElement) : null;
+    var loginButtonInModal = loginModalElement ? loginModalElement.querySelector('a.btn-primary') : null;
 
     $(document).on('click', '.btn-ajax-add-to-cart', function(event) {
         event.preventDefault();
@@ -178,17 +181,39 @@ $(document).ready(function() {
         const menuId = button.data('id');
 
         if (!IS_LOGGED_IN) {
-            if (typeof showLoginPopupRequired === 'function') {
-                showLoginPopupRequired(event, 'menambahkan item ke keranjang');
-            } else if (loginModal) {
+            if (loginModal && loginButtonInModal) {
+                // Simpan menu_id dan redirect_url ke URL login
+                // Redirect akan kembali ke halaman menu ini setelah login
+                let redirectUrlAfterLogin = MENU_PAGE_URL; // atau window.location.href jika ingin kembali ke halaman persis dengan filter dll.
+                let finalLoginUrl = LOGIN_URL +
+                                    '?redirect_to=' + encodeURIComponent(redirectUrlAfterLogin) +
+                                    '&add_menu_after_login=' + menuId;
+
+                loginButtonInModal.setAttribute('href', finalLoginUrl);
                 loginModal.show();
             } else {
-                alert('Anda harus masuk untuk menambahkan item.');
-                window.location.href = "{{ route('login') }}";
+                // Fallback jika modal tidak terdefinisi
+                let redirectUrlAfterLogin = MENU_PAGE_URL;
+                let finalLoginUrl = LOGIN_URL +
+                                    '?redirect_to=' + encodeURIComponent(redirectUrlAfterLogin) +
+                                    '&add_menu_after_login=' + menuId;
+                Swal.fire({
+                    title: 'Masuk Diperlukan',
+                    text: 'Anda harus masuk untuk menambahkan item. Apakah Anda ingin masuk sekarang?',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Masuk',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = finalLoginUrl;
+                    }
+                });
             }
             return;
         }
 
+        // --- Logika AJAX yang sudah ada jika user sudah login ---
         const originalIcon = button.find('.button-icon').html();
         const originalText = button.find('.button-text').text();
         button.find('.button-icon').addClass('d-none');
@@ -197,34 +222,26 @@ $(document).ready(function() {
         button.prop('disabled', true).addClass('loading');
 
         $.ajax({
-            url: "{{ route('cart.ajaxAdd') }}",
+            url: "{{ route('cart.ajaxAdd') }}", // Pastikan route ini benar
             method: "POST",
             data: { menu_id: menuId },
             success: function(response) {
                 if (response.success) {
-                    if (typeof showGlobalToast === 'function') {
-                        showGlobalToast('success', response.message || 'Item ditambahkan!');
-                    } else {
-                        showToast('success', response.message || 'Item ditambahkan!');
-                    }
+                    showToast('success', response.message || 'Item ditambahkan!');
                     if (response.cartCount !== undefined && typeof updateGlobalCartBadge === 'function') {
                         updateGlobalCartBadge(response.cartCount);
                     }
                 } else {
-                    if (typeof showGlobalToast === 'function') {
-                        showGlobalToast('error', response.message || 'Gagal menambahkan item.');
-                    } else {
-                        showToast('error', response.message || 'Gagal menambahkan item.');
-                    }
+                    showToast('error', response.message || 'Gagal menambahkan item.');
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error("AJAX Error:", textStatus, errorThrown, jqXHR.responseText);
-                if (typeof showGlobalToast === 'function') {
-                    showGlobalToast('error', 'Terjadi kesalahan. Silakan coba lagi.');
-                } else {
-                    showToast('error', 'Terjadi kesalahan. Silakan coba lagi.');
+                let errorMessage = 'Terjadi kesalahan. Silakan coba lagi.';
+                if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                    errorMessage = jqXHR.responseJSON.message;
                 }
+                showToast('error', errorMessage);
             },
             complete: function() {
                 button.find('.button-spinner').addClass('d-none');
@@ -236,17 +253,26 @@ $(document).ready(function() {
     });
 
     function showToast(icon, title) {
-        const Toast = Swal.mixin({toast: true,position: 'top-end',showConfirmButton: false,timer: 3000,timerProgressBar: true,didOpen: (t) => {t.addEventListener('mouseenter', Swal.stopTimer);t.addEventListener('mouseleave', Swal.resumeTimer)}});
+        const Toast = Swal.mixin({toast: true,position: 'top-end',showConfirmButton: false,timer:2000,timerProgressBar: true,didOpen: (t) => {t.addEventListener('mouseenter', Swal.stopTimer);t.addEventListener('mouseleave', Swal.resumeTimer)}});
         Toast.fire({icon: icon,title: title});
     }
 
+    // Fungsi ini mungkin ada di layout utama Anda, pastikan ada atau buat yang serupa
+    // function updateGlobalCartBadge(count) {
+    //     $('#cart-badge-count').text(count); // Sesuaikan selectornya
+    // }
+
+    // Tampilkan notifikasi jika ada dari session setelah login dan penambahan item
+    @if(session('status_after_login_add_item'))
+        showToast("{{ session('status_after_login_add_item_type') }}", "{{ session('status_after_login_add_item') }}");
+    @endif
+
+    // Notifikasi umum lainnya yang mungkin sudah ada
     @if(session('success'))
-        if (typeof showGlobalToast === 'function') showGlobalToast('success', '{{ session('success') }}');
-        else showToast('success', '{{ session('success') }}');
+        showToast('success', '{{ session('success') }}');
     @endif
     @if(session('error'))
-        if (typeof showGlobalToast === 'function') showGlobalToast('error', '{{ session('error') }}');
-        else showToast('error', '{{ session('error') }}');
+        showToast('error', '{{ session('error') }}');
     @endif
 
 });

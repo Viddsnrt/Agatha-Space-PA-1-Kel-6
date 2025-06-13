@@ -103,8 +103,8 @@
                      <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="jumlah_orang" class="form-label">Jumlah Orang</label>
-                            <input type="number" name="jumlah_orang" id="jumlah_orang" class="form-control" required min="1" placeholder="Jumlah tamu">
-                        </div>
+                            <input type="number" name="jumlah_orang" id="jumlah_orang" class="form-control" required min="1" max="10" placeholder="Jumlah tamu (Maks. 10)">
+                </div>
                         <div class="col-md-6 mb-3">
                             <label for="durasi" class="form-label">Durasi</label>
                             <input type="text" name="durasi" id="durasi" class="form-control" placeholder="cth: 2 jam">
@@ -255,6 +255,9 @@
 @endpush
 
 @push('scripts')
+{{-- Pastikan SweetAlert2 sudah di-include di layout utama atau di sini --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     // Inisialisasi AOS jika belum
     // AOS.init({ duration: 800, once: true, offset: 50 });
@@ -263,9 +266,8 @@
     const formWrapper = document.getElementById('formReservasiWrapper');
     const reservasiForm = document.getElementById('actualReservasiForm');
     const successMessageDiv = document.getElementById('reservation-success-message');
-    const SESSION_STORAGE_KEY = 'reservationSent'; // Konstanta untuk key
+    const SESSION_STORAGE_KEY = 'reservationSent';
 
-    // Fungsi untuk menginisialisasi atau mendapatkan instance Collapse
     function getOrInitCollapseInstance() {
         if (!formCollapseInstance && formWrapper) {
             formCollapseInstance = new bootstrap.Collapse(formWrapper, { toggle: false });
@@ -273,39 +275,29 @@
         return formCollapseInstance;
     }
 
-    // Fungsi untuk memproses setelah kembali dari WA
     function handleReturnFromWhatsApp() {
-        console.log("Handling return from WhatsApp check..."); // Debugging
+        console.log("Handling return from WhatsApp check...");
         if (reservasiForm) {
-            reservasiForm.reset(); // Kosongkan form
-            // Pastikan field hidden juga di-reset jika perlu (biasanya tidak, tapi jaga-jaga)
-            // document.getElementById('mejaIdTerpilih').value = '';
-            // document.getElementById('namaMejaTerpilih').value = '';
-            // document.getElementById('mejaTerpilihText').innerText = '';
+            reservasiForm.reset();
         }
 
         const collapse = getOrInitCollapseInstance();
         if (collapse) {
-            collapse.hide(); // Sembunyikan form
+            collapse.hide();
         }
 
         if (successMessageDiv) {
-            successMessageDiv.classList.remove('d-none'); // Tampilkan pesan sukses
-            // Optional: Re-initialize AOS for this element if needed
-            // AOS.refreshHard();
-            // Scroll ke pesan sukses agar terlihat
+            successMessageDiv.classList.remove('d-none');
             successMessageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        sessionStorage.removeItem(SESSION_STORAGE_KEY); // Hapus flag
-        console.log("Flag removed, processing complete."); // Debugging
+        sessionStorage.removeItem(SESSION_STORAGE_KEY);
+        console.log("Flag removed, processing complete.");
     }
-
 
     function pilihDanScrollKeForm(namaMeja, idMeja) {
         if (!formWrapper || !reservasiForm) return;
 
-        // Sembunyikan pesan sukses jika sedang ditampilkan saat memilih meja baru
         if (successMessageDiv && !successMessageDiv.classList.contains('d-none')) {
              successMessageDiv.classList.add('d-none');
         }
@@ -319,16 +311,16 @@
             collapse.show();
         }
 
-        // Kosongkan field spesifik saat meja baru dipilih
         document.getElementById('nama_pemesan').value = '';
         document.getElementById('no_hp').value = '';
         document.getElementById('tanggal').value = '';
+        // Set default jam kedatangan ke jam saat ini atau biarkan kosong
+        // document.getElementById('jam').value = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
         document.getElementById('jam').value = '';
         document.getElementById('jumlah_orang').value = '';
         document.getElementById('durasi').value = '';
         document.getElementById('catatan').value = '';
 
-        // Isi kembali field hidden
         document.getElementById('mejaIdTerpilih').value = idMeja;
         document.getElementById('namaMejaTerpilih').value = namaMeja;
 
@@ -341,25 +333,25 @@
         }, 350);
     }
 
-    // --- Event Listener Utama ---
     document.addEventListener('DOMContentLoaded', function () {
-
-        // Inisialisasi instance collapse jika form sudah terbuka saat load
         if (formWrapper && formWrapper.classList.contains('show')) {
              getOrInitCollapseInstance();
         }
 
-        // --- Handler untuk Submit Form (Kirim ke WA) ---
         if (reservasiForm) {
             reservasiForm.addEventListener('submit', function (event) {
                 event.preventDefault();
 
                 if (!reservasiForm.checkValidity()) {
                     reservasiForm.reportValidity();
+                    // Fokus ke field pertama yang invalid
+                    const firstInvalidField = reservasiForm.querySelector(':invalid');
+                    if (firstInvalidField) {
+                        firstInvalidField.focus();
+                    }
                     return;
                 }
 
-                // Ambil data dari form (sama seperti sebelumnya)
                 const namaMeja = document.getElementById('namaMejaTerpilih').value;
                 const namaPemesan = document.getElementById('nama_pemesan').value;
                 const noHp = document.getElementById('no_hp').value;
@@ -380,8 +372,7 @@
                     }
                 }
 
-                const nomorWaTujuan = '6282277124955'; // Ganti dengan nomor Anda
-
+                const nomorWaTujuan = '6282277124955';
                 let pesan = `Halo Agatha Space, saya ingin melakukan reservasi meja:\n\n`;
                 pesan += `*Meja:* ${namaMeja}\n`;
                 pesan += `*Nama Pemesan:* ${namaPemesan}\n`;
@@ -396,31 +387,48 @@
                 const encodedPesan = encodeURIComponent(pesan);
                 const urlWhatsApp = `https://wa.me/${nomorWaTujuan}?text=${encodedPesan}`;
 
-                // Set flag di sessionStorage SEBELUM membuka WhatsApp
-                sessionStorage.setItem(SESSION_STORAGE_KEY, 'true');
-                console.log("Flag set in sessionStorage"); // Debugging
+                // ===== AWAL PERUBAHAN ALUR NOTIFIKASI DAN REDIRECT WA =====
+                Swal.fire({
+                    icon: 'info', // Ganti ikon menjadi info atau success sesuai preferensi
+                    title: 'Mengarahkan ke WhatsApp',
+                    text: 'Permintaan reservasi Anda akan segera dibuka di WhatsApp. Mohon lanjutkan pengiriman pesan di sana.',
+                    showConfirmButton: false,
+                    timer: 3000, // Notifikasi tampil selama 2 detik
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading(); // Tampilkan ikon loading selama timer
+                    },
+                    willClose: () => {
+                        // Setelah timer selesai (2 detik), buka WhatsApp
+                        sessionStorage.setItem(SESSION_STORAGE_KEY, 'true');
+                        console.log("Flag set in sessionStorage before opening WhatsApp");
 
-                // Buka URL di tab baru
-                window.open(urlWhatsApp, '_blank');
-
-                // TIDAK ADA reset form atau hide collapse di sini
-                console.log("WhatsApp tab opened (or attempted)"); // Debugging
+                        window.open(urlWhatsApp, '_blank');
+                        console.log("WhatsApp tab opened (or attempted)");
+                        // Tidak ada reset form atau hide collapse di sini, akan ditangani oleh visibilitychange
+                    }
+                });
+                // ===== AKHIR PERUBAHAN ALUR NOTIFIKASI DAN REDIRECT WA =====
             });
         }
 
-        // --- Handler untuk Visibility Change (Kembali ke Tab) ---
         document.addEventListener('visibilitychange', () => {
-            console.log(`Visibility changed to: ${document.visibilityState}`); // Debugging
-            // Periksa apakah tab menjadi terlihat DAN flag ada di sessionStorage
+            console.log(`Visibility changed to: ${document.visibilityState}`);
             if (document.visibilityState === 'visible' && sessionStorage.getItem(SESSION_STORAGE_KEY) === 'true') {
-                 console.log("Conditions met: Tab visible and flag exists. Running handler..."); // Debugging
-                // Beri sedikit delay untuk memastikan user benar-benar kembali
-                // dan menghindari eksekusi terlalu cepat jika ada flicker tab
-                setTimeout(handleReturnFromWhatsApp, 100); // delay 100ms
+                 console.log("Conditions met: Tab visible and flag exists. Running handler...");
+                setTimeout(handleReturnFromWhatsApp, 100);
             }
         });
 
-    }); // Akhir DOMContentLoaded
+        // Inisialisasi AOS jika Anda menggunakannya
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: 600, // Durasi animasi default
+                once: true,    // Animasi hanya berjalan sekali
+                offset: 50,    // Offset dari bottom viewport sebelum animasi dimulai
+            });
+        }
 
+    }); // Akhir DOMContentLoaded
 </script>
 @endpush

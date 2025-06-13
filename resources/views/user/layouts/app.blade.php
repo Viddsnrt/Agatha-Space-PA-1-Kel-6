@@ -174,12 +174,12 @@
           <li class="nav-item"><a class="nav-link {{ request()->routeIs('gallery') ? 'active' : '' }}" href="{{ route('gallery') }}"><i class="fas fa-images me-1"></i>Galeri</a></li>
           <li class="nav-item">
             @auth
-                <a class="nav-link {{ request()->routeIs('kritik-saran.list') ? 'active' : '' }}" href="{{ route('kritik-saran.list') }}">
-                    <i class="fas fa-comment-alt me-1"></i>Kritik & Saran
+                <a class="nav-link {{ request()->routeIs('testimoni.list') ? 'active' : '' }}" href="{{ route('testimoni.list') }}">
+                    <i class="fas fa-comment-alt me-1"></i>Testimoni & Saran
                 </a>
             @else
-                <a href="#" class="nav-link" onclick="showLoginPopupRequired(event, 'mengakses Kritik & Saran')">
-                    <i class="fas fa-comment-alt me-1"></i>Kritik & Saran
+                <a href="#" class="nav-link" onclick="showLoginPopupRequired(event, 'mengakses Testimoni & Saran')">
+                    <i class="fas fa-comment-alt me-1"></i>Testimoni & Saran
                 </a>
             @endauth
           </li>

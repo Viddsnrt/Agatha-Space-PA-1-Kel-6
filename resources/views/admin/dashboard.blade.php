@@ -1,12 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard Admin') {{-- Judul Tab Browser untuk halaman ini --}}
+@section('title', 'Dashboard Admin')
 
 @section('content_header')
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0 text-dark">Dashboard Agatha Space</h1> {{-- Judul halaman utama --}}
+                <h1 class="m-0 text-dark">Dashboard Agatha Space</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -53,8 +53,9 @@
                     url="{{ route('admin.gallery.index') }}" url-text="Lihat Semua"/>
             </div>
             <div class="col-md-3 col-sm-6 col-12">
-                <x-adminlte-info-box title="Kritik & Saran" text="{{ $totalKritikSaran ?? 'N/A' }}" icon="fas fa-comment-dots" theme="gradient-orange"
-                    url="{{ route('admin.kritik-saran.index') }}" url-text="Lihat Semua"/>
+                {{-- PERUBAHAN DI SINI --}}
+                <x-adminlte-info-box title="Testimoni & Saran" text="{{ $totalTestimoni ?? 'N/A' }}" icon="fas fa-comment-dots" theme="gradient-orange"
+                    url="{{ route('admin.testimoni.index') }}" url-text="Lihat Semua"/>
             </div>
             <div class="col-md-3 col-sm-6 col-12">
                 <x-adminlte-info-box title="Promo & Event Aktif" text="{{ $totalPromoEvent ?? 'N/A' }}" icon="fas fa-bullhorn" theme="gradient-teal"
@@ -68,8 +69,8 @@
             <div class="col-md-6">
                 <x-adminlte-card title="Statistik Pengunjung (Contoh)" theme="lightblue" theme-mode="outline"
                     icon="fas fa-chart-line" collapsible removable>
-                    <canvas id="visitorsChart"></canvas> {{-- Perlu Chart.js plugin & setup JS --}}
-                {{-- </x-adminlte-card>
+                    <canvas id="visitorsChart"></canvas>
+                </x-adminlte-card>
             </div>
             <div class="col-md-6">
                 <x-adminlte-card title="Pesanan Terbaru (Contoh)" theme="success" theme-mode="outline"
@@ -83,14 +84,12 @@
 @endsection
 
 @push('css')
-    {{-- Tambahkan CSS kustom jika ada --}}
-    {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
     <style>
         .info-box .info-box-icon {
-            font-size: 2.5rem; /* Sedikit perbesar icon di info-box */
+            font-size: 2.5rem;
         }
         .small-box .icon > i {
-            font-size: 60px; /* Perbesar icon di small-box */
+            font-size: 60px;
             top: 10px;
         }
     </style>
@@ -99,33 +98,6 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            // Contoh jika ingin menggunakan Chart.js
-            // Pastikan plugin Chartjs di config/adminlte.php aktif
-            /*
-            var ctx = document.getElementById('visitorsChart').getContext('2d');
-            var visitorsChart = new Chart(ctx, {
-                type: 'line', // atau 'bar', 'pie', dll.
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
-                    datasets: [{
-                        label: 'Pengunjung Unik',
-                        data: [120, 190, 300, 500, 200, 300],
-                        backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                        borderColor: 'rgba(0, 123, 255, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
-            */
             console.log('Dashboard admin siap!');
         });
     </script>

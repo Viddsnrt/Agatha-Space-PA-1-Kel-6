@@ -322,13 +322,13 @@
                     </li>
                     <li class="nav-item">
                         @auth
-                            <a class="nav-link {{ request()->routeIs('kritik-saran.create') ? 'active' : '' }}"
-                            href="{{ route('kritik-saran.list') }}">
-                                <i class="fas fa-comment-alt"></i>Kritik & Saran
+                            <a class="nav-link {{ request()->routeIs('testimoni.create') ? 'active' : '' }}"
+                            href="{{ route('testimoni.list') }}">
+                                <i class="fas fa-comment-alt"></i>Testimoni & Saran
                             </a>
                         @else
-                            <a href="#" class="nav-link" onclick="showLoginPopup(event, 'mengakses fitur Kritik & Saran')">
-                                <i class="fas fa-comment-alt"></i>Kritik & Saran
+                            <a href="#" class="nav-link" onclick="showLoginPopup(event, 'mengakses fitur Testimoni & Saran')">
+                                <i class="fas fa-comment-alt"></i>Testimoni & Saran
                             </a>
                         @endauth
                     </li>

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use App\Models\Category;
 use App\Models\Gallery;
-use App\Models\KritikSaran;
+use App\Models\Testimoni;
 use App\Models\PromoEvent;
 use App\Models\Table;
 use App\Models\User;
@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $totalMenus      = Menu::count();
         $totalCategories = Category::count();
         $totalGallery  = Gallery::count();
-        $totalKritikSaran = KritikSaran::count();
+        $totalTestimoni = Testimoni::count();
         $totalPromoEvent = PromoEvent::count();
         $totalTable = Table::count();
         $totalUsers = User::count();
@@ -29,7 +29,7 @@ class DashboardController extends Controller
             'totalMenus',
             'totalCategories',
             'totalGallery',
-            'totalKritikSaran',
+            'totalTestimoni',
             'totalPromoEvent',
             'totalTable',
             'totalUsers',

@@ -16,7 +16,8 @@ class Order extends Model
         'payment_method',
         'total_amount',
         'notes',
-        'status',
+        // 'status', // DIHAPUS
+        'jam_kedatangan', // DITAMBAHKAN
         'order_details_text',
         'whatsapp_message_sent',
     ];
@@ -24,6 +25,7 @@ class Order extends Model
     protected $casts = [
         'total_amount' => 'decimal:2',
         'whatsapp_message_sent' => 'boolean',
+        'jam_kedatangan' => 'datetime:H:i', // Casting untuk jam kedatangan (opsional, tapi baik)
     ];
 
     public function user()

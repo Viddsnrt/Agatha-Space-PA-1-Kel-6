@@ -5,11 +5,23 @@ namespace App\Http\Controllers\Auth; // Pastikan namespace benar
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Log; // Pastikan ada
-use Illuminate\Validation\ValidationException; // Tambahkan ini untuk validasi di ajaxAdd
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class CartController extends Controller
 {
+    /**
+     * Jika semua method di controller ini membutuhkan autentikasi (kecuali mungkin 'add' jika masih ada).
+     * Anda bisa menambahkan middleware di constructor.
+     * Namun, karena 'ajaxAdd' sudah dilindungi middleware di route, ini mungkin tidak perlu
+     * kecuali jika 'view', 'ajaxUpdate', 'ajaxRemove' juga selalu butuh auth (yang mana biasanya iya).
+     * Jika Anda sudah mengatur middleware di route, itu sudah cukup.
+     */
+    // public function __construct()
+    // {
+    //     $this->middleware('auth'); // Ini akan berlaku untuk SEMUA method di controller ini
+    // }
+
     /**
      * Menambahkan item ke keranjang (via form submit biasa - JIKA MASIH DIPAKAI).
      * Biasanya dipanggil dari halaman menu jika tidak menggunakan AJAX.
@@ -45,69 +57,93 @@ class CartController extends Controller
     }
 
     /**
-     * Menampilkan halaman keranjang.
-     * Route: GET /cart
+     * Menampilkan halaman keranjang/checkout.
+     * Route: GET /cart (biasanya dilindungi middleware 'auth')
      */
     public function view()
     {
-        return view('user.cart'); // View mengambil cart dari session
+        // Ambil data keranjang dari session
+        $cart = session()->get('cart', []);
+
+        // Berdasarkan diskusi sebelumnya, Anda menggunakan 'user.checkout' untuk tampilan keranjang.
+        // Jika nama viewnya 'user.cart', ganti 'user.checkout' menjadi 'user.cart'.
+        return view('user.cart', compact('cart'));
     }
 
     /**
      * Menambahkan item ke keranjang via AJAX.
-     * Dipanggil dari halaman menu.
-     * Route: POST /cart/ajax-add
+     * Dipanggil dari halaman menu jika user SUDAH LOGIN.
+     * Jika belum login, LoginController akan menangani penambahan setelah login.
+     * Route: POST /cart/ajax-add (dilindungi middleware 'auth')
      */
     public function ajaxAdd(Request $request)
     {
+        // Middleware 'auth' pada route ini sudah memastikan user terautentikasi.
         try {
-            // Validasi input dari AJAX
             $validated = $request->validate([
-                'menu_id' => 'required|exists:menus,id', // Pastikan menu_id valid
+                'menu_id' => 'required|exists:menus,id', // Pastikan menu_id valid dan ada di tabel menus
             ]);
 
             $menuId = $validated['menu_id'];
             $menu = Menu::findOrFail($menuId); // Ambil detail menu
             $cart = session()->get('cart', []);
 
-            // Logika tambah atau increment quantity
+            // Logika tambah atau beri notifikasi jika sudah ada
             if (isset($cart[$menuId])) {
-                $cart[$menuId]['quantity']++;
+                // Opsi 1: Increment quantity jika sudah ada (sesuai kode Anda sebelumnya)
+                // $cart[$menuId]['quantity']++;
+                // session()->put('cart', $cart);
+                // return response()->json([
+                //     'success' => true,
+                //     'message' => $menu->nama . ' jumlahnya ditambah di keranjang.',
+                //     'cartCount' => count($cart)
+                // ]);
+
+                // Opsi 2: Beri tahu pengguna bahwa item sudah ada (tidak dianggap error)
+                // Ini mungkin lebih sesuai dengan alur "tambah" yang biasanya berarti item baru
+                // atau setidaknya notifikasi yang berbeda jika sudah ada.
+                return response()->json([
+                    'success' => true, // Atau false jika Anda ingin JS menanggapinya sebagai 'gagal' menambahkan baru
+                    'message' => $menu->nama . ' sudah ada di keranjang Anda.',
+                    'cartCount' => count($cart) // Tetap kirim cartCount
+                ]);
+
             } else {
+                // Item belum ada, tambahkan baru
                 $cart[$menuId] = [
                     "nama" => $menu->nama,
-                    "gambar" => $menu->gambar,
+                    "gambar" => $menu->gambar, // Pastikan path/nama field gambar sesuai model Menu Anda
                     "harga" => $menu->harga,
                     "quantity" => 1
+                    // Anda bisa menambahkan field lain yang relevan di sini,
+                    // misalnya 'id' => $menu->id, jika $menuId sebagai key array tidak cukup.
                 ];
+                session()->put('cart', $cart);
+
+                // Kirim response sukses
+                return response()->json([
+                    'success' => true,
+                    'message' => $menu->nama . ' berhasil ditambahkan ke keranjang!',
+                    'cartCount' => count($cart) // Kirim jumlah item unik
+                ]);
             }
-
-            // Simpan kembali ke session
-            session()->put('cart', $cart);
-
-            // Kirim response sukses
-            return response()->json([
-                'success' => true,
-                'message' => $menu->nama . ' berhasil ditambahkan ke keranjang!',
-                'cartCount' => count($cart) // Kirim jumlah item unik (bisa dipakai update counter di header)
-            ]);
 
         } catch (ValidationException $e) {
              return response()->json([
                 'success' => false,
-                'message' => 'Data tidak valid.',
-                'errors' => $e->errors(),
+                'message' => 'Data tidak valid.', // Pesan umum
+                'errors' => $e->errors(), // Detail error validasi (berguna untuk debug di client)
             ], 422); // Status Unprocessable Entity
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Menu tidak ditemukan.'
+                'message' => 'Menu yang dipilih tidak ditemukan.' // Pesan lebih user-friendly
             ], 404); // Status Not Found
         } catch (\Exception $e) {
-            Log::error("Error adding item via AJAX: " . $e->getMessage());
+            Log::error("Error adding item to cart via AJAX: " . $e->getMessage() . " - Payload: " . json_encode($request->all()));
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menambahkan item ke keranjang.'
+                'message' => 'Terjadi kesalahan internal saat menambahkan item ke keranjang.' // Production message
                 // 'message' => 'Error: ' . $e->getMessage() // Untuk development
             ], 500); // Status Internal Server Error
         }
@@ -116,8 +152,8 @@ class CartController extends Controller
 
     /**
      * Memperbarui kuantitas item di keranjang via AJAX.
-     * Dipanggil dari halaman keranjang.
-     * Route: POST /cart/update
+     * Dipanggil dari halaman keranjang/checkout.
+     * Route: POST /cart/update (dilindungi middleware 'auth')
      */
     public function ajaxUpdate(Request $request)
     {
@@ -127,7 +163,7 @@ class CartController extends Controller
             'type' => 'required|in:increase,decrease',
         ]);
 
-        $id = $validated['id'];
+        $id = $validated['id']; // Ini adalah menu_id yang menjadi key di array cart
         $type = $validated['type'];
 
         try {
@@ -140,7 +176,8 @@ class CartController extends Controller
                 ], 404);
             }
 
-            $newQty = $cart[$id]['quantity'];
+            $currentQty = $cart[$id]['quantity'];
+            $newQty = $currentQty; // Inisialisasi
 
             if ($type === 'increase') {
                 $cart[$id]['quantity']++;
@@ -150,8 +187,8 @@ class CartController extends Controller
                 $newQty = $cart[$id]['quantity'];
 
                 if ($cart[$id]['quantity'] <= 0) {
-                    unset($cart[$id]);
-                    $newQty = 0;
+                    unset($cart[$id]); // Hapus item jika kuantitas 0 atau kurang
+                    $newQty = 0; // Set newQty menjadi 0 karena item dihapus
                 }
             }
 
@@ -159,14 +196,14 @@ class CartController extends Controller
 
             return response()->json([
                 'success' => true,
-                'qty' => $newQty,
-                'message' => $newQty > 0 ? 'Kuantitas diperbarui.' : 'Item dihapus dari keranjang.',
-                'cart_count' => count($cart),
-                'cartEmpty' => empty($cart)
+                'qty' => $newQty, // Kuantitas baru item (atau 0 jika dihapus)
+                'message' => $newQty > 0 ? 'Kuantitas berhasil diperbarui.' : 'Item berhasil dihapus dari keranjang.',
+                'cart_count' => count($cart), // Jumlah item unik di keranjang
+                'cartEmpty' => empty($cart) // boolean, true jika keranjang kosong
             ]);
 
         } catch (\Exception $e) {
-            Log::error("Error updating cart via AJAX: " . $e->getMessage());
+            Log::error("Error updating cart via AJAX: " . $e->getMessage() . " - Payload: " . json_encode($request->all()));
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat memperbarui keranjang.' // Production message
@@ -177,8 +214,8 @@ class CartController extends Controller
 
     /**
      * Menghapus item dari keranjang via AJAX.
-     * Dipanggil dari halaman keranjang.
-     * Route: POST /cart/remove
+     * Dipanggil dari halaman keranjang/checkout.
+     * Route: POST /cart/remove (dilindungi middleware 'auth')
      */
     public function ajaxRemove(Request $request)
     {
@@ -186,7 +223,7 @@ class CartController extends Controller
          $validated = $request->validate([
             'id' => 'required', // ID Item di keranjang (menu_id)
         ]);
-        $id = $validated['id'];
+        $id = $validated['id']; // menu_id
 
         try {
             $cart = session()->get('cart', []);
@@ -209,7 +246,7 @@ class CartController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error("Error removing item from cart via AJAX: " . $e->getMessage());
+            Log::error("Error removing item from cart via AJAX: " . $e->getMessage() . " - Payload: " . json_encode($request->all()));
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat menghapus item.' // Production message

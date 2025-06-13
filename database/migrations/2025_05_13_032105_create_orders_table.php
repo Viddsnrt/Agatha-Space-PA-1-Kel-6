@@ -10,14 +10,15 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null'); // Jika user dihapus, order tetap ada tapi user_id jadi null
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('customer_name');
             $table->string('customer_phone')->nullable();
             $table->string('payment_method');
-            $table->decimal('total_amount', 15, 2); // Sesuaikan presisi jika perlu
+            $table->decimal('total_amount', 15, 2);
             $table->text('notes')->nullable();
-            $table->enum('status', ['pending', 'processing', 'completed', 'cancelled', 'on_delivery'])->default('pending');
-            $table->text('order_details_text')->nullable(); // Untuk ringkasan teks
+            // $table->enum('status', ['pending', 'processing', 'completed', 'cancelled', 'on_delivery'])->default('pending'); // DIHAPUS
+            $table->time('jam_kedatangan')->nullable(); // TAMBAHKAN: Kolom untuk jam kedatangan (opsional)
+            $table->text('order_details_text')->nullable();
             $table->boolean('whatsapp_message_sent')->default(false);
             $table->timestamps();
         });
